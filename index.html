@@ -83,15 +83,23 @@
         const QRstring = qrcode.output();
 
         const qrcodeContainer = document.getElementById('qrcode-container');
-        qrcodeContainer.innerHTML = '';
+        
+        // Check if the container exists
+        if (!qrcodeContainer) {
+            console.error("QR Code container not found");
+            return;
+        }
 
+        qrcodeContainer.innerHTML = ''; // Clear the container
+
+        const qrCanvas = document.createElement('canvas');
         const qr = new QRious({
-            element: document.createElement('canvas'),
+            element: qrCanvas,
             value: QRstring,
             size: 300,
         });
 
-        qrcodeContainer.appendChild(qr._canvas); // Append the canvas to the container
+        qrcodeContainer.appendChild(qrCanvas); // Append the canvas to the container
 
         const logoOverlay = document.createElement('img');
         logoOverlay.src = 'https://i.imgur.com/ipaIiBl.png'; // Replace with the path to your logo image
@@ -100,6 +108,7 @@
         qrcodeContainer.appendChild(logoOverlay); // Append the logo overlay to the container
     }
 </script>
+
 
 </body>
 </html>
