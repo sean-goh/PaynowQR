@@ -6,6 +6,29 @@
     <title>PayNow QR Code Generator</title>
     <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <script src="./dist/paynowqr.umd.js"></script>
+
+    <style>
+        #qrcode-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        #qrcode {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #logo-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px; /* Adjust the size of the logo */
+            height: 50px; /* Adjust the size of the logo */
+        }
+    </style>
 </head>
 <body>
 
@@ -37,30 +60,7 @@
     <button type="button" onclick="generateQRCode()">Generate QR Code</button>
   </form>
 
-  <div id="qrcode"></div>
-
-<style>
-  #qrcode-container {
-    position: relative;
-    width: 300px;
-    height: 300px;
-  }
-
-  #qrcode {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  #logo-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50px; /* Adjust the size of the logo */
-    height: 50px; /* Adjust the size of the logo */
-  }
-</style>
+  <div id="qrcode-container"></div>
 
 <script>
     function generateQRCode() {
@@ -108,7 +108,6 @@
         qrcodeContainer.appendChild(logoOverlay); // Append the logo overlay to the container
     }
 </script>
-
 
 </body>
 </html>
