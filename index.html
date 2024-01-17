@@ -15,23 +15,31 @@
             height: 100vh;
         }
 
-        form {
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        #form-container,
+        #qrcode-container {
             background-color: #fff;
-            padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
             width: 300px;
+            margin: 20px;
             text-align: center;
         }
 
-        label {
+        #form-container label {
             display: block;
             margin-bottom: 10px;
             font-weight: bold;
             color: #333;
         }
 
-        input {
+        #form-container input {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -41,7 +49,7 @@
             font-size: 14px;
         }
 
-        button {
+        #form-container button {
             background-color: #4caf50;
             color: #fff;
             padding: 12px 20px;
@@ -52,13 +60,13 @@
             transition: background-color 0.3s ease;
         }
 
-        button:hover {
+        #form-container button:hover {
             background-color: #45a049;
         }
 
         #qrcode-container {
+            width: 300px;
             margin-top: 20px;
-            text-align: center;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
@@ -66,35 +74,39 @@
 </head>
 <body>
 
-  <form id="payNowForm">
-    <label for="uen">UEN (UEN of company):</label>
-    <input type="text" id="uen" name="uen" required>
-    <br>
+  <div class="container">
+    <div id="form-container">
+      <form id="payNowForm">
+        <label for="uen">UEN (UEN of company):</label>
+        <input type="text" id="uen" name="uen" required>
+        <br>
 
-    <label for="amount">Amount to Pay:</label>
-    <input type="number" id="amount" name="amount" required>
-    <br>
+        <label for="amount">Amount to Pay:</label>
+        <input type="number" id="amount" name="amount" required>
+        <br>
 
-    <label for="editable">Allow Editing of Amount:</label>
-    <input type="checkbox" id="editable" name="editable">
-    <br>
+        <label for="editable">Allow Editing of Amount:</label>
+        <input type="checkbox" id="editable" name="editable">
+        <br>
 
-    <label for="expiry">Expiry Date (YYYYMMDD):</label>
-    <input type="text" id="expiry" name="expiry">
-    <br>
+        <label for="expiry">Expiry Date (YYYYMMDD):</label>
+        <input type="text" id="expiry" name="expiry">
+        <br>
 
-    <label for="refNumber">Reference Number:</label>
-    <input type="text" id="refNumber" name="refNumber">
-    <br>
+        <label for="refNumber">Reference Number:</label>
+        <input type="text" id="refNumber" name="refNumber">
+        <br>
 
-    <label for="company">Company Name:</label>
-    <input type="text" id="company" name="company">
-    <br>
+        <label for="company">Company Name:</label>
+        <input type="text" id="company" name="company">
+        <br>
 
-    <button type="button" onclick="generateQRCode()">Generate QR Code</button>
-  </form>
+        <button type="button" onclick="generateQRCode()">Generate QR Code</button>
+      </form>
+    </div>
 
-  <div id="qrcode-container"></div>
+    <div id="qrcode-container"></div>
+  </div>
 
 <script>
     function generateQRCode() {
