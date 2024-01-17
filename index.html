@@ -6,45 +6,18 @@
     <title>PayNow QR Code Generator</title>
     <script src="./dist/paynowqr.umd.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-with-logos@1.0.5/lib/qrcode-with-logos.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-with-logos@1.0.3/dist/qrcode-with-logos.min.js"></script>
 </head>
-
-
 <body>
 
   <form id="payNowForm">
-    <label for="uen">UEN (UEN of company):</label>
-    <input type="text" id="uen" name="uen" required>
-    <br>
-
-    <label for="amount">Amount to Pay:</label>
-    <input type="number" id="amount" name="amount" required>
-    <br>
-
-    <label for="editable">Allow Editing of Amount:</label>
-    <input type="checkbox" id="editable" name="editable">
-    <br>
-
-    <label for="expiry">Expiry Date (YYYYMMDD):</label>
-    <input type="text" id="expiry" name="expiry">
-    <br>
-
-    <label for="refNumber">Reference Number:</label>
-    <input type="text" id="refNumber" name="refNumber">
-    <br>
-
-    <label for="company">Company Name:</label>
-    <input type="text" id="company" name="company">
-    <br>
-
-    <button type="button" onclick="generateQRCode()">Generate QR Code</button>
+    <!-- ... (your existing form elements) -->
   </form>
 
   <div id="qrcode"></div>
 
   <script>
     function generateQRCode() {
-      // Clear previous QR code
       document.getElementById("qrcode").innerHTML = '';
 
       const uen = document.getElementById('uen').value;
@@ -65,12 +38,11 @@
 
       const QRstring = qrcode.output();
 
-      // Generate QR code with logo using qrcode-with-logos library
-      QRCodeWithLogo.toDataURL({
+      QRCodeWithLogos.toDataURL({
         content: QRstring,
         width: 300,
         height: 300,
-        logo: 'https://github.com/sean-goh/PaynowQR/blob/production/NVLogo', // Replace with the path to your logo
+        logo: './path/to/your/logo.png', // Replace with the path to your logo
       }, function (err, url) {
         if (err) throw err;
         document.getElementById("qrcode").innerHTML = '<img src="' + url + '">';
