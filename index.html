@@ -6,11 +6,13 @@
     <title>PayNow QR Code Generator</title>
     <script src="./dist/paynowqr.umd.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-with-logos@1.0.5/lib/qrcode-with-logos.min.js"></script>
 </head>
+    
 <body>
 
   <form id="payNowForm">
-    <label for="uen">UEN (UEN of company):</label>
+   <label for="uen">UEN (UEN of company):</label>
     <input type="text" id="uen" name="uen" required>
     <br>
 
@@ -35,13 +37,14 @@
     <br>
 
     <button type="button" onclick="generateQRCode()">Generate QR Code</button>
+
   </form>
 
   <div id="qrcode"></div>
 
   <script>
+      
     function generateQRCode() {
-      // Clear previous QR code
       document.getElementById("qrcode").innerHTML = '';
 
       const uen = document.getElementById('uen').value;
@@ -62,11 +65,16 @@
 
       const QRstring = qrcode.output();
 
-      // Generate QR code using qrcode-generator library
-      const qr = new QRCode(document.getElementById("qrcode"), {
-        text: QRstring,
+      new QrCodeWithLogo({
+        content: QRstring,
         width: 300,
         height: 300,
+        logo: {
+            src: "https://i.imgur.com/ipaIiBl.png", // Replace with the path to your logo
+        }
+      }, function (err, url) {
+        if (err) throw err;
+        document.getElementById("qrcode").innerHTML = '<img src="' + url + '">';
       });
 
       console.log(QRstring);
