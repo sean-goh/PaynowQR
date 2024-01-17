@@ -44,6 +44,15 @@
 
   <script>
       
+    var qrcodeWithLogosScript = document.createElement('script');
+    qrcodeWithLogosScript.src = 'https://cdn.jsdelivr.net/npm/qrcode-with-logos@2.1.0/dist/qrcode-with-logos.min.js';
+    qrcodeWithLogosScript.onload = function () {
+        // Define QRCodeWithLogos globally
+        QRCodeWithLogos = window.QRCodeWithLogos;
+        console.log("QRCodeWithLogos loaded successfully");
+    };
+    document.head.appendChild(qrcodeWithLogosScript);
+  
     function generateQRCode() {
       document.getElementById("qrcode").innerHTML = '';
 
