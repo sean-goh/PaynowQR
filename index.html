@@ -41,6 +41,9 @@
 
   <script>
     function generateQRCode() {
+      // Clear previous QR code
+      document.getElementById("qrcode").innerHTML = '';
+
       const uen = document.getElementById('uen').value;
       const amount = parseFloat(document.getElementById('amount').value);
       const editable = document.getElementById('editable').checked;
@@ -72,4 +75,3 @@
 
 </body>
 </html>
-
