@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PayNow QR Code Generator</title>
     <script src="./dist/paynowqr.umd.js"></script>
-    <script src="https://cdn.rawgit.com/neocotic/qrious/v4.0.2/build/qrious.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -59,11 +59,11 @@
 
       const QRstring = qrcode.output();
 
-      // Generate QR code using qrious library
-      const qr = new QRious({
-        element: document.getElementById('qrcode'),
-        value: QRstring,
-        size: 300,
+      // Generate QR code using qrcode-generator library
+      const qr = new QRCode(document.getElementById("qrcode"), {
+        text: QRstring,
+        width: 300,
+        height: 300,
       });
 
       console.log(QRstring);
