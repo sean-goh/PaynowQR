@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PayNow QR Code Generator</title>
-    <script src="./dist/paynowqr.umd.js"></script>
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-with-logos@1.0.5/lib/qrcode-with-logos.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
 </head>
 <body>
 
   <form id="payNowForm">
-   <label for="uen">UEN (UEN of company):</label>
+    <label for="uen">UEN (UEN of company):</label>
     <input type="text" id="uen" name="uen" required>
     <br>
 
@@ -36,59 +34,49 @@
     <br>
 
     <button type="button" onclick="generateQRCode()">Generate QR Code</button>
-
   </form>
 
   <div id="qrcode"></div>
 
 <script>
     function generateQRCode() {
-      document.getElementById("qrcode").innerHTML = '';
+        const uen = document.getElementById('uen').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+        const editable = document.getElementById('editable').checked;
+        const expiry = document.getElementById('expiry').value;
+        const refNumber = document.getElementById('refNumber').value;
+        const company = document.getElementById('company').value;
 
-      const uen = document.getElementById('uen').value;
-      const amount = parseFloat(document.getElementById('amount').value);
-      const editable = document.getElementById('editable').checked;
-      const expiry = document.getElementById('expiry').value;
-      const refNumber = document.getElementById('refNumber').value;
-      const company = document.getElementById('company').value;
-
-      const qrcode = new PaynowQR({
-        uen: uen,
-        amount: amount,
-        editable: editable,
-        expiry: expiry,
-        refNumber: refNumber,
-        company: company
-      });
-
-      const QRstring = qrcode.output();
-
-      /*const logoImage = new Image();
-      logoImage.src = "https://i.imgur.com/ipaIiBl.png"; // Replace with the path to your logo
-
-      const script = document.createElement("script");
-      script.src = "https://cdn.jsdelivr.net/npm/qrcode-with-logos@1.0.5/lib/qrcode-with-logos.min.js";
-      script.onload = function () {
-        const qrCodeWithLogos = new QRCodeWithLogos();
-        
-        qrCodeWithLogos.toDataURL(QRstring, {
-          logo: {
-            image: logoImage,
-            width: 80, // Adjust the width of your logo
-            height: 80 // Adjust the height of your logo
-          }
-        }, (err, url) => {
-          if (err) throw err;
-          document.getElementById("qrcode").innerHTML = '<img src="' + url + '">';
+        const qrcode = new PaynowQR({
+            uen: uen,
+            amount: amount,
+            editable: editable,
+            expiry: expiry,
+            refNumber: refNumber,
+            company: company
         });
-      };
 
-      document.head.appendChild(script);*/
+        const QRstring = qrcode.output();
 
-      console.log(QRstring);
+        const qrcodeContainer = document.getElementById('qrcode');
+        qrcodeContainer.innerHTML = '';
+
+        const qr = new QRious({
+            element: qrcodeContainer,
+            value: QRstring,
+            size: 300,
+        });
+
+        const logoImage = new Image();
+        logoImage.src = 'https://i.imgur.com/ipaIiBl.png'; // Replace with the path to your logo image
+        logoImage.onload = function () {
+            const context = qr._context;
+            const logoSize = 50;
+            context.drawImage(logoImage, (qr._canvas.width - logoSize) / 2, (qr._canvas.height - logoSize) / 2, logoSize, logoSize);
+            console.log(qr.toDataURL());
+        };
     }
 </script>
-
 
 </body>
 </html>
