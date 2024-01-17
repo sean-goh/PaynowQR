@@ -65,28 +65,16 @@
 
       const QRstring = qrcode.output();
 
-      // ...
-
-    const qrCodeWithLogo = new QrCodeWithLogo({
-  content: QRstring,
-  width: 300,
-  height: 300,
-  logo: {
-    src: "https://i.imgur.com/ipaIiBl.png", // Replace with the path to your logo
-    width: 80, // Adjust the width of your logo
-    height: 80 // Adjust the height of your logo
-  }
-});
-
-    qrCodeWithLogo.toDataURL((err, url) => {
-  if (err) throw err;
-  document.getElementById("qrcode").innerHTML = '<img src="' + url + '">';
-});
-
-// ...
-
-
-      document.getElementById("qrcode").innerHTML = '<img src="' + url + '">';
+      QrCodeWithLogos.toDataURL(QRstring, {
+        logo: {
+          src: "https://i.imgur.com/ipaIiBl.png", // Replace with the path to your logo
+          width: 80, // Adjust the width of your logo
+          height: 80 // Adjust the height of your logo
+        }
+      }, (err, url) => {
+        if (err) throw err;
+        document.getElementById("qrcode").innerHTML = '<img src="' + url + '">';
+      });
 
       console.log(QRstring);
     }
