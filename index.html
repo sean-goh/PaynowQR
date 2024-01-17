@@ -1,48 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PayNow QR Code Generator</title>
-    <script src="./dist/paynowqr.umd.js"></script>
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-with-logos@1.0.5/lib/qrcode-with-logos.min.js"></script>
-</head>
-    
-<body>
-
-  <form id="payNowForm">
-   <label for="uen">UEN (UEN of company):</label>
-    <input type="text" id="uen" name="uen" required>
-    <br>
-
-    <label for="amount">Amount to Pay:</label>
-    <input type="number" id="amount" name="amount" required>
-    <br>
-
-    <label for="editable">Allow Editing of Amount:</label>
-    <input type="checkbox" id="editable" name="editable">
-    <br>
-
-    <label for="expiry">Expiry Date (YYYYMMDD):</label>
-    <input type="text" id="expiry" name="expiry">
-    <br>
-
-    <label for="refNumber">Reference Number:</label>
-    <input type="text" id="refNumber" name="refNumber">
-    <br>
-
-    <label for="company">Company Name:</label>
-    <input type="text" id="company" name="company">
-    <br>
-
-    <button type="button" onclick="generateQRCode()">Generate QR Code</button>
-
-  </form>
-
-  <div id="qrcode"></div>
-
-  <script>
+<script>
     function generateQRCode() {
       document.getElementById("qrcode").innerHTML = '';
 
@@ -73,13 +29,10 @@
         }
       });
 
-      const url = qrCodeWithLogo.toDataURL(); // Directly get the data URL
+      const url = qrCodeWithLogo.generate(); // Correct method to obtain data URL
 
       document.getElementById("qrcode").innerHTML = '<img src="' + url + '">';
 
       console.log(QRstring);
     }
-  </script>
-
-</body>
-</html>
+</script>
