@@ -6,13 +6,11 @@
     <title>PayNow QR Code Generator</title>
     <script src="./dist/paynowqr.umd.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-with-logos@1.0.5/lib/qrcode-with-logos.min.js"></script>
 </head>
-    
 <body>
 
   <form id="payNowForm">
-   <label for="uen">UEN (UEN of company):</label>
+    <label for="uen">UEN (UEN of company):</label>
     <input type="text" id="uen" name="uen" required>
     <br>
 
@@ -37,66 +35,43 @@
     <br>
 
     <button type="button" onclick="generateQRCode()">Generate QR Code</button>
-
   </form>
 
   <div id="qrcode"></div>
 
   <script>
-    // Load qrcode-with-logos asynchronously
-    var qrcodeWithLogosScript = document.createElement('script');
-    qrcodeWithLogosScript.src = 'https://cdn.jsdelivr.net/npm/qrcode-with-logos@1.0.5/lib/qrcode-with-logos.min.js';
-    qrcodeWithLogosScript.onload = function () {
-        // Define QRCodeWithLogos globally
-        QRCodeWithLogos = window.QRCodeWithLogos;
-        console.log("QRCodeWithLogos loaded successfully");
-    };
-    document.head.appendChild(qrcodeWithLogosScript);
-
     function generateQRCode() {
-        document.getElementById("qrcode").innerHTML = '';
+      // Clear previous QR code
+      document.getElementById("qrcode").innerHTML = '';
 
-        const uen = document.getElementById('uen').value;
-        const amount = parseFloat(document.getElementById('amount').value);
-        const editable = document.getElementById('editable').checked;
-        const expiry = document.getElementById('expiry').value;
-        const refNumber = document.getElementById('refNumber').value;
-        const company = document.getElementById('company').value;
+      const uen = document.getElementById('uen').value;
+      const amount = parseFloat(document.getElementById('amount').value);
+      const editable = document.getElementById('editable').checked;
+      const expiry = document.getElementById('expiry').value;
+      const refNumber = document.getElementById('refNumber').value;
+      const company = document.getElementById('company').value;
 
-        const qrcode = new PaynowQR({
-            uen: uen,
-            amount: amount,
-            editable: editable,
-            expiry: expiry,
-            refNumber: refNumber,
-            company: company
-        });
+      const qrcode = new PaynowQR({
+        uen: uen,
+        amount: amount,
+        editable: editable,
+        expiry: expiry,
+        refNumber: refNumber,
+        company: company
+      });
 
-        const QRstring = qrcode.output();
+      const QRstring = qrcode.output();
 
-        // Check if QRCodeWithLogos is defined
-        if (!QRCodeWithLogos) {
-            console.error("QRCodeWithLogos is not defined");
-            return;
-        }
+      // Generate QR code using qrcode-generator library
+      const qr = new QRCode(document.getElementById("qrcode"), {
+        text: QRstring,
+        width: 300,
+        height: 300,
+      });
 
-        QRCodeWithLogos.toDataURL({
-            content: QRstring,
-            width: 300,
-            height: 300,
-            logo: 'https://i.imgur.com/ipaIiBl.png', // Replace with the actual Imgur image URL
-        }, function (err, url) {
-            if (err) throw err;
-
-            // Display the QR code image
-            const imgElement = document.createElement('img');
-            imgElement.src = url;
-            document.getElementById("qrcode").appendChild(imgElement);
-        });
-
-        console.log(QRstring);
+      console.log(QRstring);
     }
-</script>
+  </script>
 
 </body>
 </html>
