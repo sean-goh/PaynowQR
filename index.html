@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PayNow QR Code Generator</title>
+    <script src="./dist/paynowqr.umd.js"></script>
+    <script src="https://cdn.rawgit.com/neocotic/qrious/v4.0.2/build/qrious.min.js"></script>
 </head>
 <body>
 
@@ -35,7 +37,8 @@
     <button type="button" onclick="generateQRCode()">Generate QR Code</button>
   </form>
 
-  <script src="./dist/paynowqr.umd.js"></script>
+  <div id="qrcode"></div>
+
   <script>
     function generateQRCode() {
       const uen = document.getElementById('uen').value;
@@ -55,6 +58,14 @@
       });
 
       const QRstring = qrcode.output();
+
+      // Generate QR code using qrious library
+      const qr = new QRious({
+        element: document.getElementById('qrcode'),
+        value: QRstring,
+        size: 300,
+      });
+
       console.log(QRstring);
     }
   </script>
