@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PayNow QR Code Generator</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
     <script src="./dist/paynowqr.umd.js"></script>
 </head>
 <body>
@@ -48,48 +48,20 @@
         const refNumber = document.getElementById('refNumber').value;
         const company = document.getElementById('company').value;
 
-        const qrcode = new PaynowQR({
-            uen: uen,
-            amount: amount,
-            editable: editable,
-            expiry: expiry,
-            refNumber: refNumber,
-            company: company
+        const qrCode = new QRCodeStyling({
+            width: 300,
+            height: 300,
+            data: `UEN:${uen};Amount:${amount};Editable:${editable};Expiry:${expiry};RefNumber:${refNumber};Company:${company}`,
+            image: 'https://i.imgur.com/ipaIiBl.png', // Logo image URL
+            imageOptions: {
+                crossOrigin: 'anonymous', // Use if the logo is hosted on a different domain
+                margin: 20, // Margin around the logo
+            },
         });
 
-        const QRstring = qrcode.output();
-
-        const qrCanvas = document.createElement('canvas');
-        const qr = new QRious({
-            element: qrCanvas,
-            value: QRstring,
-            size: 300,
-        });
-
-        const logoImage = new Image();
-        logoImage.src = 'https://i.imgur.com/ipaIiBl.png'; // Replace with the path to your logo image
-
-        logoImage.onload = function () {
-            const compositeCanvas = document.createElement('canvas');
-            const context = compositeCanvas.getContext('2d');
-            compositeCanvas.width = qrCanvas.width;
-            compositeCanvas.height = qrCanvas.height;
-
-            // Draw the white background
-            context.fillStyle = 'white';
-            context.fillRect(0, 0, compositeCanvas.width, compositeCanvas.height);
-
-            // Draw the QR code
-            context.drawImage(qrCanvas, 0, 0);
-
-            // Draw the logo in the center
-            const logoSize = 100; // Adjust the size of the logo
-            context.drawImage(logoImage, (compositeCanvas.width - logoSize) / 2, (compositeCanvas.height - logoSize) / 2, logoSize, logoSize);
-
-            const qrcodeContainer = document.getElementById('qrcode-container');
-            qrcodeContainer.innerHTML = '';
-            qrcodeContainer.appendChild(compositeCanvas);
-        };
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        qrcodeContainer.innerHTML = '';
+        qrcode.append(document.getElementById('qrcode-container'));
     }
 </script>
 
