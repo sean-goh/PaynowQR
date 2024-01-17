@@ -6,31 +6,6 @@
     <title>PayNow QR Code Generator</title>
     <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <script src="./dist/paynowqr.umd.js"></script>
-
-    <style>
-        #qrcode-container {
-            position: relative;
-            width: 300px;
-            height: 300px;
-        }
-
-        #qrcode {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        #logo-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px; /* Adjust the size of the logo */
-            height: auto; /* Maintain aspect ratio */
-            background-color: white; /* Set the background color to white */
-            padding: 5px; /* Add padding for better visibility */
-        }
-    </style>
 </head>
 <body>
 
@@ -84,16 +59,6 @@
 
         const QRstring = qrcode.output();
 
-        const qrcodeContainer = document.getElementById('qrcode-container');
-        
-        // Check if the container exists
-        if (!qrcodeContainer) {
-            console.error("QR Code container not found");
-            return;
-        }
-
-        qrcodeContainer.innerHTML = ''; // Clear the container
-
         const qrCanvas = document.createElement('canvas');
         const qr = new QRious({
             element: qrCanvas,
@@ -101,13 +66,30 @@
             size: 300,
         });
 
-        qrcodeContainer.appendChild(qrCanvas); // Append the canvas to the container
+        const logoImage = new Image();
+        logoImage.src = 'https://i.imgur.com/ipaIiBl.png'; // Replace with the path to your logo image
 
-        const logoOverlay = document.createElement('img');
-        logoOverlay.src = 'https://i.imgur.com/ipaIiBl.png'; // Replace with the path to your logo image
-        logoOverlay.id = 'logo-overlay';
+        logoImage.onload = function () {
+            const compositeCanvas = document.createElement('canvas');
+            const context = compositeCanvas.getContext('2d');
+            compositeCanvas.width = qrCanvas.width;
+            compositeCanvas.height = qrCanvas.height;
 
-        qrcodeContainer.appendChild(logoOverlay); // Append the logo overlay to the container
+            // Draw the white background
+            context.fillStyle = 'white';
+            context.fillRect(0, 0, compositeCanvas.width, compositeCanvas.height);
+
+            // Draw the QR code
+            context.drawImage(qrCanvas, 0, 0);
+
+            // Draw the logo in the center
+            const logoSize = 100; // Adjust the size of the logo
+            context.drawImage(logoImage, (compositeCanvas.width - logoSize) / 2, (compositeCanvas.height - logoSize) / 2, logoSize, logoSize);
+
+            const qrcodeContainer = document.getElementById('qrcode-container');
+            qrcodeContainer.innerHTML = '';
+            qrcodeContainer.appendChild(compositeCanvas);
+        };
     }
 </script>
 
