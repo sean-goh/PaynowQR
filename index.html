@@ -17,8 +17,12 @@
 
         .container {
             display: flex;
+            flex-direction: column; /* Change to column layout */
             align-items: center;
-            justify-content: space-around;
+            justify-content: center;
+            text-align: center;
+            margin-top: auto; /* Move the container to the bottom */
+            margin-bottom: 20px; /* Add margin at the bottom */
         }
 
         #form-container,
@@ -67,6 +71,7 @@
         #qrcode-container {
             width: 300px;
             margin-top: 20px;
+            margin-bottom: 0; /* Remove bottom margin for the QR code */
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
