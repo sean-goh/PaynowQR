@@ -1,3 +1,6 @@
+I apologize for the oversight. It seems the issue might be related to the way the `QrCodeWithLogos` library is used. Let's make sure we are using it correctly. Please try the following modified code:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,9 +68,12 @@
 
       const QRstring = qrcode.output();
 
+      const logoImage = new Image();
+      logoImage.src = "https://i.imgur.com/ipaIiBl.png"; // Replace with the path to your logo
+
       QrCodeWithLogos.toDataURL(QRstring, {
         logo: {
-          src: "https://i.imgur.com/ipaIiBl.png", // Replace with the path to your logo
+          image: logoImage,
           width: 80, // Adjust the width of your logo
           height: 80 // Adjust the height of your logo
         }
@@ -82,3 +88,6 @@
 
 </body>
 </html>
+```
+
+This version includes the creation of a new `Image` object for the logo, and this object is then used in the `QrCodeWithLogos.toDataURL` function. Please try this and see if it resolves the issue.
