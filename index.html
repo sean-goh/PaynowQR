@@ -43,7 +43,7 @@
   <div id="qrcode"></div>
 
   <script>
-      
+    // Load qrcode-with-logos asynchronously
     var qrcodeWithLogosScript = document.createElement('script');
     qrcodeWithLogosScript.src = 'https://cdn.jsdelivr.net/npm/qrcode-with-logos@2.1.0/dist/qrcode-with-logos.min.js';
     qrcodeWithLogosScript.onload = function () {
@@ -52,43 +52,51 @@
         console.log("QRCodeWithLogos loaded successfully");
     };
     document.head.appendChild(qrcodeWithLogosScript);
-  
+
     function generateQRCode() {
-      document.getElementById("qrcode").innerHTML = '';
+        document.getElementById("qrcode").innerHTML = '';
 
-      const uen = document.getElementById('uen').value;
-      const amount = parseFloat(document.getElementById('amount').value);
-      const editable = document.getElementById('editable').checked;
-      const expiry = document.getElementById('expiry').value;
-      const refNumber = document.getElementById('refNumber').value;
-      const company = document.getElementById('company').value;
+        const uen = document.getElementById('uen').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+        const editable = document.getElementById('editable').checked;
+        const expiry = document.getElementById('expiry').value;
+        const refNumber = document.getElementById('refNumber').value;
+        const company = document.getElementById('company').value;
 
-      const qrcode = new PaynowQR({
-        uen: uen,
-        amount: amount,
-        editable: editable,
-        expiry: expiry,
-        refNumber: refNumber,
-        company: company
-      });
+        const qrcode = new PaynowQR({
+            uen: uen,
+            amount: amount,
+            editable: editable,
+            expiry: expiry,
+            refNumber: refNumber,
+            company: company
+        });
 
-      const QRstring = qrcode.output();
+        const QRstring = qrcode.output();
 
-      new QrCodeWithLogo({
-        content: QRstring,
-        width: 300,
-        height: 300,
-        logo: {
-            src: "https://i.imgur.com/ipaIiBl.png", // Replace with the path to your logo
+        // Check if QRCodeWithLogos is defined
+        if (!QRCodeWithLogos) {
+            console.error("QRCodeWithLogos is not defined");
+            return;
         }
-      }, function (err, url) {
-        if (err) throw err;
-        document.getElementById("qrcode").innerHTML = '<img src="' + url + '">';
-      });
 
-      console.log(QRstring);
+        QRCodeWithLogos.toDataURL({
+            content: QRstring,
+            width: 300,
+            height: 300,
+            logo: 'https://i.imgur.com/ipaIiBl.png', // Replace with the actual Imgur image URL
+        }, function (err, url) {
+            if (err) throw err;
+
+            // Display the QR code image
+            const imgElement = document.createElement('img');
+            imgElement.src = url;
+            document.getElementById("qrcode").appendChild(imgElement);
+        });
+
+        console.log(QRstring);
     }
-  </script>
+</script>
 
 </body>
 </html>
