@@ -6,32 +6,37 @@
     <title>PayNow QR Code Generator</title>
     <script src="./dist/paynowqr.umd.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-with-logos@1.0.2/dist/qrcode.min.js"></script>
 </head>
 <body>
 
   <form id="payNowForm">
-    <label for="uen">UEN (UEN of company):</label>
-    <input type="text" id="uen" name="uen" required>
+    <label for="uen">UEN:</label>
+    <input type="text" id="uen" name="uen" value="201403121W" required>
     <br>
 
-    <label for="amount">Amount to Pay:</label>
-    <input type="number" id="amount" name="amount" required>
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" name="amount" value="500" required>
     <br>
 
-    <label for="editable">Allow Editing of Amount:</label>
-    <input type="checkbox" id="editable" name="editable">
+    <label for="editable">Editable:</label>
+    <input type="checkbox" id="editable" name="editable" checked>
     <br>
 
-    <label for="expiry">Expiry Date (YYYYMMDD):</label>
-    <input type="text" id="expiry" name="expiry">
+    <label for="expiry">Expiry Date:</label>
+    <input type="text" id="expiry" name="expiry" value="20201231">
     <br>
 
     <label for="refNumber">Reference Number:</label>
-    <input type="text" id="refNumber" name="refNumber">
+    <input type="text" id="refNumber" name="refNumber" value="TQINV-10001">
     <br>
 
     <label for="company">Company Name:</label>
-    <input type="text" id="company" name="company">
+    <input type="text" id="company" name="company" value="ACME Pte Ltd.">
+    <br>
+
+    <label for="logo">Logo URL:</label>
+    <input type="text" id="logo" name="logo">
     <br>
 
     <button type="button" onclick="generateQRCode()">Generate QR Code</button>
@@ -41,12 +46,16 @@
 
   <script>
     function generateQRCode() {
+      // Clear existing QR code
+      document.getElementById("qrcode").innerHTML = "";
+
       const uen = document.getElementById('uen').value;
       const amount = parseFloat(document.getElementById('amount').value);
       const editable = document.getElementById('editable').checked;
       const expiry = document.getElementById('expiry').value;
       const refNumber = document.getElementById('refNumber').value;
       const company = document.getElementById('company').value;
+      const logo = document.getElementById('logo').value;
 
       const qrcode = new PaynowQR({
         uen: uen,
@@ -59,11 +68,12 @@
 
       const QRstring = qrcode.output();
 
-      // Generate QR code using qrcode-generator library
-      const qr = new QRCode(document.getElementById("qrcode"), {
-        text: QRstring,
+      // Generate QR code using qrcode-with-logos library
+      const qr = new QRCodeWithLogos(document.getElementById("qrcode"), {
+        content: QRstring,
         width: 300,
         height: 300,
+        logo: logo, // Add logo URL here
       });
 
       console.log(QRstring);
