@@ -6,6 +6,7 @@
     <title>PayNow QR Code Generator</title>
     <script src="./dist/paynowqr.umd.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-with-logos"></script>
 </head>
 <body>
 
@@ -62,11 +63,15 @@
 
       const QRstring = qrcode.output();
 
-      // Generate QR code using qrcode-generator library
-      const qr = new QRCode(document.getElementById("qrcode"), {
-        text: QRstring,
+      // Generate QR code with logo using qrcode-with-logos library
+      QRCodeWithLogos.toDataURL({
+        content: QRstring,
         width: 300,
         height: 300,
+        logo: 'https://github.com/sean-goh/PaynowQR/blob/production/NVLogo', // Replace with the path to your logo
+      }, function (err, url) {
+        if (err) throw err;
+        document.getElementById("qrcode").innerHTML = '<img src="' + url + '">';
       });
 
       console.log(QRstring);
