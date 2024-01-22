@@ -158,6 +158,9 @@
         downloadButton.textContent = 'Download as PDF';
         downloadButton.addEventListener('click', () => downloadAsPDF(qrcodeContainer));
         qrcodeContainer.appendChild(downloadButton);
+
+        qrcodeContainer.style.height = '400px'; 
+        
     }
 
     function downloadAsPDF(container) {
