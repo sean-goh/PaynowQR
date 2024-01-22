@@ -147,6 +147,11 @@
         const qrcodeContainer = document.getElementById('qrcode-container');
         qrcodeContainer.innerHTML = '';
         styledQRCode.append(qrcodeContainer);
+
+        const refNumberText = document.createElement('p');
+        refNumberText.textContent = `Reference Number: ${refNumber}`;
+        qrcodeContainer.appendChild(refNumberText);
+
     }
 </script>
 
