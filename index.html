@@ -161,7 +161,13 @@
     }
 
     function downloadAsPDF(container) {
-        html2pdf(container);
+        html2pdf(container, {
+            margin: 10,
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            callback: function (pdf) {
+                pdf.save('qrcode.pdf');
+            }
+        });
     }
 
 </script>
