@@ -156,7 +156,10 @@
 
         const downloadButton = document.createElement('button');
         downloadButton.textContent = 'Download as PDF';
-        downloadButton.addEventListener('click', () => downloadAsPDF(qrcodeContainer));
+        downloadButton.addEventListener('click', () => {
+            setTimeout(() => downloadAsPDF(qrcodeContainer), 500);
+        });
+        
         qrcodeContainer.appendChild(downloadButton);
 
         qrcodeContainer.style.height = '400px'; 
