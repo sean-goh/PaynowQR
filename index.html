@@ -161,6 +161,12 @@
         refNumberText.textContent = `Reference Number: ${refNumber}`;
         qrcodeContainer.appendChild(refNumberText);
 
+        const canvas = document.createElement('canvas');
+        canvas.width = qrcodeContainer.clientWidth;
+        canvas.height = qrcodeContainer.clientHeight;
+        const ctx = canvas.getContext('2d');
+
+        html2canvas(qrcodeContainer).then((canvas) => {        
 
         qrcodeContainer.toBlob((blob) => {
 
