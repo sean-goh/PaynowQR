@@ -79,14 +79,15 @@
             color: #333;
             margin-top: 5px;
         }
-        
+
+        #downloadButton {
+            display: none; /* Initially hide the button */
+            margin-top: 10px; /* Add margin for spacing */
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
     <script src="./dist/paynowqr.umd.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
-
-
 </head>
 <body>
 
@@ -122,6 +123,9 @@
     </div>
 
     <div id="qrcode-container"></div>
+
+    <!-- Add a button to trigger download -->
+    <button id="downloadButton" type="button" onclick="downloadQRCode()">Download QR Code</button>
   </div>
 
 <script>
@@ -163,33 +167,5 @@
         refNumberText.textContent = `Reference Number: ${refNumber}`;
         qrcodeContainer.appendChild(refNumberText);
 
-        const canvas = document.createElement('canvas');
-        canvas.width = qrcodeContainer.clientWidth;
-        canvas.height = qrcodeContainer.clientHeight;
-        const ctx = canvas.getContext('2d');
-
-    
-        html2canvas(qrcodeContainer).then((canvas) => {
-       
-            canvas.toBlob((blob) => {
-              
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = 'qrcode.png';  
-
-              
-                document.body.appendChild(link);
-                link.click();
-
-                
-                document.body.removeChild(link);
-            });
-        });
-    }
-
-
-
-</script>
-
-</body>
-</html>
+        // Show the download button after QR code generation
+        document.getElementById('downloa
