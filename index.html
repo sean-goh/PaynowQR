@@ -45,7 +45,7 @@
             width: 300px;
             margin: 20px;
             text-align: center;
-            display: block; /* Make sure the containers are visible */
+            display: none; /* Initially hidden */
         }
 
         #form-container label {
@@ -138,7 +138,7 @@
       </form>
     </div>
 
-    <div id="qrcode-container">
+    <div id="qrcode-container" style="display: none;">
       <!-- QR code will be generated here -->
     </div>
 
@@ -184,6 +184,9 @@
         const refNumberText = document.createElement('p');
         refNumberText.textContent = `Reference Number: ${refNumber}`;
         qrcodeContainer.appendChild(refNumberText);
+
+        // Show the QR code container after QR code generation
+        qrcodeContainer.style.display = 'block';
 
         // Show the download button after QR code generation
         document.getElementById('downloadButton').style.display = 'block';
