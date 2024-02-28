@@ -92,6 +92,7 @@
         }
 
         #qrcode-container {
+            display: none;
             width: 300px;
             margin-top: 20px;
             margin-bottom: 0;
@@ -157,13 +158,18 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
         function generateQRCode() {
+        // Show the QR code container after generating the QR code
+        document.getElementById('qrcode-container').style.display = 'block'; 
+        // Show the download button after QR code generation
+        document.getElementById('downloadButton').style.display = 'block';
+            
             const uen = document.getElementById('uen').value;
             const amount = parseFloat(document.getElementById('amount').value);
             const editable = document.getElementById('editable').checked;
             const expiry = document.getElementById('expiry').value;
             const refNumber = document.getElementById('refNumber').value;
             const company = document.getElementById('company').value;
-
+        
             const qrCode = new PaynowQR({
                 uen: uen,
                 amount: amount,
