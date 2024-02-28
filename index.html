@@ -38,6 +38,7 @@
 
         #form-container,
         #qrcode-container {
+            display: none; /* Initially hidden */
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -137,7 +138,9 @@
       </form>
     </div>
 
-    <div id="qrcode-container"></div>
+    <div id="qrcode-container">
+      <!-- QR code will be generated here -->
+    </div>
 
     <!-- Add a button to trigger download -->
     <button id="downloadButton" type="button" onclick="downloadQRCode()">Download QR Code</button>
@@ -175,12 +178,15 @@
         });
 
         const qrcodeContainer = document.getElementById('qrcode-container');
-        qrcodeContainer.innerHTML = '';
+        qrcodeContainer.innerHTML = ''; // Clear previous content if any
         styledQRCode.append(qrcodeContainer);
 
         const refNumberText = document.createElement('p');
         refNumberText.textContent = `Reference Number: ${refNumber}`;
         qrcodeContainer.appendChild(refNumberText);
+
+        // Show the QR code container after QR code generation
+        qrcodeContainer.style.display = 'block';
 
         // Show the download button after QR code generation
         document.getElementById('downloadButton').style.display = 'block';
