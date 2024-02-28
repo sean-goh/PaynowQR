@@ -25,49 +25,6 @@
             margin-bottom: auto; /* Add margin at the bottom */
         }
 
-        #form-container,
-        #qrcode-container {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            width: 300px;
-            margin: 20px;
-            text-align: center;
-        }
-
-        #form-container label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        #form-container input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        #form-container button {
-            background-color: #e74c3c;
-            color: #fff;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        #form-container button:hover {
-            background-color: #c0392b;
-        }
-
         #qrcode-container {
             width: 300px;
             margin-top: 20px;
@@ -80,9 +37,20 @@
             margin-top: 5px;
         }
 
-        #downloadButton {
-            display: none; /* Initially hide the button */
-            margin-top: 10px; /* Add margin for spacing */
+        button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #c0392b;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
@@ -94,10 +62,10 @@
 <div class="container">
     <input type="file" id="csvFile" accept=".csv">
     <button type="button" onclick="handleCSVUpload()">Upload CSV</button>
+    <button type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
 
     <div id="qrcode-container"></div>
 
-    <!-- Add a button to trigger download -->
     <button id="downloadButton" type="button" onclick="downloadQRCode()">Download QR Code</button>
 </div>
 
@@ -172,6 +140,17 @@
                 document.body.removeChild(link);
             });
         });
+    }
+
+    function downloadCSVTemplate() {
+        const csvTemplate = 'UEN,Amount,Editable,Expiry,RefNumber,Company\n';
+        const blob = new Blob([csvTemplate], { type: 'text/csv' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'paynow_template.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 </script>
 
