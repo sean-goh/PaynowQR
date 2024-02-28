@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayNow QR Code Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column; /* Change to column layout */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-top: 20px; /* Move the container to the bottom */
+            margin-bottom: auto; /* Add margin at the bottom */
+        }
+
+        #form-container,
+        #qrcode-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 300px;
+            margin: 20px;
+            text-align: center;
+        }
+
+        #form-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        #form-container button {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #form-container button:hover {
+            background-color: #c0392b;
+        }
+
+        #qrcode-container {
+            width: 300px;
+            margin-top: 20px;
+            margin-bottom: 0; /* Remove bottom margin for the QR code */
+        }
+
+        #qrcode-container p {
+            font-size: 16px;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        #downloadButton {
+            display: none; /* Initially hide the button */
+            margin-top: 10px; /* Add margin for spacing */
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
+    <script src="./dist/paynowqr.umd.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+  <div class="container">
+    <div id="form-container">
+      <form id="payNowForm">
+        <label for="uen">UEN (UEN of company):</label>
+        <input type="text" id="uen" name="uen" required>
+        <br>
+
+        <label for="amount">Amount to Pay:</label>
+        <input type="number" id="amount" name="amount" required>
+        <br>
+
+        <label for="editable">Allow Editing of Amount:</label>
+        <input type="checkbox" id="editable" name="editable">
+        <br>
+
+        <label for="expiry">Expiry Date (YYYYMMDD):</label>
+        <input type="text" id="expiry" name="expiry">
+        <br>
+
+        <label for="refNumber">Reference Number:</label>
+        <input type="text" id="refNumber" name="refNumber">
+        <br>
+
+        <label for="company">Company Name:</label>
+        <input type="text" id="company" name="company">
+        <br>
+
+        <button type="button" onclick="generateQRCode()">Generate QR Code</button>
+      </form>
+    </div>
+
+    <div id="qrcode-container"></div>
+
+    <!-- Add a button to trigger download -->
+    <button id="downloadButton" type="button" onclick="downloadQRCode()">Download QR Code</button>
+  </div>
+
+<script>
+    function generateQRCode() {
+        const uen = document.getElementById('uen').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+        const editable = document.getElementById('editable').checked;
+        const expiry = document.getElementById('expiry').value;
+        const refNumber = document.getElementById('refNumber').value;
+        const company = document.getElementById('company').value;
+
+        const qrCode = new PaynowQR({
+            uen: uen,
+            amount: amount,
+            editable: editable,
+            expiry: expiry,
+            refNumber: refNumber,
+            company: company
+        });
+
+        const QRstring = qrCode.output();
+
+        const styledQRCode = new QRCodeStyling({
+            width: 300,
+            height: 300,
+            data: QRstring,
+            image: 'https://i.imgur.com/ipaIiBl.png',
+            imageOptions: {
+                crossOrigin: 'anonymous',
+                margin: 0,
+            },
+        });
+
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        qrcodeContainer.innerHTML = '';
+        styledQRCode.append(qrcodeContainer);
+
+        const refNumberText = document.createElement('p');
+        refNumberText.textContent = `Reference Number: ${refNumber}`;
+        qrcodeContainer.appendChild(refNumberText);
+
+        // Show the download button after QR code generation
+        document.getElementById('downloadButton').style.display = 'block';
+    }
+
+    function downloadQRCode() {
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        const canvas = document.createElement('canvas');
+        canvas.width = qrcodeContainer.clientWidth;
+        canvas.height = qrcodeContainer.clientHeight;
+        const ctx = canvas.getContext('2d');
+
+        html2canvas(qrcodeContainer).then((canvas) => {
+            canvas.toBlob((blob) => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'qrcode.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        });
+    }
+</script>
+
+</body>
+</html>
