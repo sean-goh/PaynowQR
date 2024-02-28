@@ -179,8 +179,11 @@
 
         const qrcodeContainer = document.getElementById('qrcode-container');
         qrcodeContainer.innerHTML = ''; // Clear previous content if any
+
+        // Append the styled QR code to the container
         styledQRCode.append(qrcodeContainer);
 
+        // Create a paragraph element for the reference number
         const refNumberText = document.createElement('p');
         refNumberText.textContent = `Reference Number: ${refNumber}`;
         qrcodeContainer.appendChild(refNumberText);
