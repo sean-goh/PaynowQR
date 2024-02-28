@@ -17,12 +17,12 @@
 
         .container {
             display: flex;
-            flex-direction: column; /* Change to column layout */
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            margin-top: 20px; /* Move the container to the bottom */
-            margin-bottom: auto; /* Add margin at the bottom */
+            margin-top: 20px;
+            margin-bottom: auto;
         }
 
         #qrcode-container {
@@ -63,6 +63,31 @@
         button:hover {
             background-color: #c0392b;
         }
+
+        input[type='file'] {
+            display: none;
+        }
+
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #c0392b;
+        }
+
+        .file-name {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #555;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
     <script src="./dist/paynowqr.umd.js"></script>
@@ -71,7 +96,9 @@
 <body>
 
 <div class="container">
-    <input type="file" id="csvFile" accept=".csv">
+    <input type="file" id="csvFile" accept=".csv" onchange="updateFileName(this)">
+    <label for="csvFile" class="custom-file-upload">Choose File</label>
+    <span id="fileName" class="file-name">No file chosen</span>
     <button type="button" onclick="handleCSVUpload()">Upload CSV</button>
     <button type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
 
@@ -167,6 +194,15 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+
+    function updateFileName(input) {
+        const fileNameElement = document.getElementById('fileName');
+        if (input.files.length > 0) {
+            fileNameElement.textContent = input.files[0].name;
+        } else {
+            fileNameElement.textContent = 'No file chosen';
+        }
     }
 </script>
 
