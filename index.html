@@ -9,10 +9,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f0f0;
             margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            padding-top: 50px; /* Adjust padding to make space for the navigation bar */
         }
 
         .container {
@@ -22,9 +19,35 @@
             justify-content: center;
             text-align: center;
             margin-top: 20px;
-            margin-bottom: auto;
         }
 
+        /* New styles for navigation bar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: flex-end; /* Align items to the right */
+            z-index: 1000; /* Ensure navigation bar is above other content */
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+
+        #content-container {
+            margin-top: 50px; /* Adjust margin to avoid overlap with navigation bar */
+        }
+
+        /* Your existing CSS styles */
+        /* Add new styles for the QR code generator */
         #form-container,
         #qrcode-container {
             background-color: #fff;
@@ -84,44 +107,15 @@
             display: none;
             margin-top: 10px;
         }
-
-        nav {
-            background-color: #333;
-            padding: 10px;
-            text-align: center;
-        }
-
-        nav ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav ul li {
-            display: inline;
-            margin-right: 20px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        nav ul li a:hover {
-            color: #ccc;
-        }
     </style>
 </head>
 <body>
     <!-- Navigation bar -->
     <nav>
-        <ul>
-            <li><a href="upload.html">Upload</a></li>
-        </ul>
+        <a href="upload.html">Upload</a>
     </nav>
 
-    <div class="container">
+    <div id="content-container" class="container">
         <div id="form-container">
             <form id="payNowForm">
                 <label for="uen">UEN (UEN of company):</label>
