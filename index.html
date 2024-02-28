@@ -9,31 +9,20 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f0f0;
             margin: 0;
-            padding: 0;
-        }
-
-        .navbar {
-            background-color: #333;
-            overflow: hidden;
-            padding: 10px 0;
-        }
-
-        .navbar a {
-            float: right;
-            color: white;
-            text-align: center;
-            padding: 14px 20px;
-            text-decoration: none;
-            font-size: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
 
         .container {
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Change to column layout */
             align-items: center;
             justify-content: center;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 20px; /* Move the container to the bottom */
+            margin-bottom: auto; /* Add margin at the bottom */
         }
 
         #form-container,
@@ -82,7 +71,7 @@
         #qrcode-container {
             width: 300px;
             margin-top: 20px;
-            margin-bottom: 0;
+            margin-bottom: 0; /* Remove bottom margin for the QR code */
         }
 
         #qrcode-container p {
@@ -92,20 +81,16 @@
         }
 
         #downloadButton {
-            display: none;
-            margin-top: 10px;
+            display: none; /* Initially hide the button */
+            margin-top: 10px; /* Add margin for spacing */
         }
     </style>
-    <!-- Include your scripts here -->
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
+    <script src="./dist/paynowqr.umd.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
 
-  <!-- Navigation bar -->
-  <div class="navbar">
-    <a href="upload.html">Upload CSV</a>
-  </div>
-
-  <!-- Main content -->
   <div class="container">
     <div id="form-container">
       <form id="payNowForm">
