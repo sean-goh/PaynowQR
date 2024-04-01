@@ -90,27 +90,23 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
-    <script src="./dist/paynowqr.umd.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
 
 <div class="container">
-    <input type="file" id="csvFile" accept=".csv" onchange="updateFileName(this)">
+    <input type="file" id="csvFile" accept=".csv" onchange="handleCSVUpload(this)">
     <label for="csvFile" class="custom-file-upload">Choose File</label>
     <span id="fileName" class="file-name">No file chosen</span>
-    <button type="button" onclick="handleCSVUpload()">Upload CSV</button>
-    <button type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
-
+    
     <div id="qrcode-container"></div>
 
     <button id="downloadButton" type="button" onclick="downloadAllQRCode()">Download All QR Codes</button>
 </div>
 
 <script>
-    function handleCSVUpload() {
-        const fileInput = document.getElementById('csvFile');
-        const file = fileInput.files[0];
+    function handleCSVUpload(input) {
+        const file = input.files[0];
         const reader = new FileReader();
 
         reader.onload = function(event) {
@@ -183,26 +179,6 @@
                 });
             });
         });
-    }
-
-    function downloadCSVTemplate() {
-        const csvTemplate = 'UEN,Amount,Editable,Expiry,RefNumber,Company\n';
-        const blob = new Blob([csvTemplate], { type: 'text/csv' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'paynow_template.csv';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function updateFileName(input) {
-        const fileNameElement = document.getElementById('fileName');
-        if (input.files.length > 0) {
-            fileNameElement.textContent = input.files[0].name;
-        } else {
-            fileNameElement.textContent = 'No file chosen';
-        }
     }
 </script>
 
