@@ -96,10 +96,10 @@
 <body>
 
 <div class="container">
-    <input type="file" id="csvFile" accept=".csv" onchange="updateFileName(this)">
-    <label for="csvFile" class="custom-file-upload">Choose File</label>
-    <span id="fileName" class="file-name">No file chosen</span>
     <button type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
+    <input type="file" id="csvFile" accept=".csv" onchange="updateFileName(this)">
+    <label for="csvFile" class="custom-file-upload">Upload CSV</label>
+    <span id="fileName" class="file-name">No file chosen</span>
 
     <div id="qrcode-container"></div>
 
