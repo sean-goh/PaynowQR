@@ -89,10 +89,10 @@
             color: #555;
         }
 
+        /* Add margin between buttons */
         #downloadCSVButton {
             margin-bottom: 10px;
         }
-        
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
     <script src="./dist/paynowqr.umd.js"></script>
@@ -101,7 +101,7 @@
 <body>
 
 <div class="container">
-    <button type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
+    <button id="downloadCSVButton" type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
     <input type="file" id="csvFile" accept=".csv" onchange="updateFileName(this)">
     <label for="csvFile" class="custom-file-upload">Upload CSV</label>
     <span id="fileName" class="file-name">No file chosen</span>
