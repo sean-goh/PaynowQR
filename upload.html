@@ -122,7 +122,9 @@ function handleCSVUpload() {
         const csvData = event.target.result;
         const lines = csvData.split(/\r\n|\n/);
 
-        lines.forEach(line => {
+        // Skip the first line (header row)
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i];
             const [amount, refNumber] = line.split(',');
 
             // Set static values
@@ -134,11 +136,12 @@ function handleCSVUpload() {
             const expiry = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
 
             generateQRCode(uen, parseFloat(amount), editable === 'true', expiry, refNumber, '');
-        });
+        }
     };
 
     reader.readAsText(file);
 }
+
 
 function generateQRCode(uen, amount, editable, expiry, refNumber, company) {
     const qrCode = new PaynowQR({
