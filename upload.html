@@ -98,6 +98,7 @@
     <input type="file" id="csvFile" accept=".csv" onchange="handleCSVUpload(this)">
     <label for="csvFile" class="custom-file-upload">Choose File</label>
     <span id="fileName" class="file-name">No file chosen</span>
+    <button type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
     
     <div id="qrcode-container"></div>
 
@@ -179,6 +180,17 @@
                 });
             });
         });
+    }
+
+    function downloadCSVTemplate() {
+        const csvTemplate = 'UEN,Amount,Editable,Expiry,RefNumber,Company\n';
+        const blob = new Blob([csvTemplate], { type: 'text/csv' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'paynow_template.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 </script>
 
