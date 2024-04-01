@@ -127,7 +127,8 @@ function handleCSVUpload() {
             const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
             if (line === '') continue; // Skip empty lines
 
-            const [amount, refNumber] = line.split(',');
+            const [amountStr, refNumber] = line.split(',');
+            const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
 
             // Set static values
             const uen = "201412014EB2B";
@@ -137,12 +138,13 @@ function handleCSVUpload() {
             const today = new Date();
             const expiry = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
 
-            generateQRCode(uen, parseFloat(amount), editable === 'true', expiry, refNumber, '');
+            generateQRCode(uen, amount, editable === 'true', expiry, refNumber, '');
         }
     };
 
     reader.readAsText(file);
 }
+
 
 
 
