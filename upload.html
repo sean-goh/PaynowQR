@@ -112,78 +112,77 @@
 </div>
 
 <script>
-    
-function handleCSVUpload() {
-    const fileInput = document.getElementById('csvFile');
-    const file = fileInput.files[0];
-    const reader = new FileReader();
+    function handleCSVUpload() {
+        const fileInput = document.getElementById('csvFile');
+        const file = fileInput.files[0];
+        const reader = new FileReader();
 
-    reader.onload = function(event) {
-        const csvData = event.target.result;
-        const lines = csvData.split(/\r\n|\n/);
+        reader.onload = function(event) {
+            const csvData = event.target.result;
+            const lines = csvData.split(/\r\n|\n/);
 
-        // Skip the first line (header row)
-        for (let i = 1; i < lines.length; i++) {
-            const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
-            if (line === '') continue; // Skip empty lines
+            // Skip the first line (header row)
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
+                if (line === '') continue; // Skip empty lines
 
-            const [amountStr, refNumber] = line.split(',');
-            const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
+                const [amountStr, refNumber] = line.split(',');
+                const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
 
-            // Set static values
-            const uen = "201412014EB2B";
-            const editable = "No";
+                // Set static values
+                const uen = "201412014EB2B";
+                const editable = "No";
 
-            // Calculate expiry date
-            const today = new Date();
-            const expiry = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+                // Calculate expiry date
+                const today = new Date();
+                const expiry = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
 
-            generateQRCode(uen, amount, editable === 'true', expiry, refNumber, '');
-        }
-    };
+                generateQRCode(uen, amount, editable === 'true', expiry, refNumber, '');
+            }
+        };
 
-    reader.readAsText(file);
-}
+        reader.readAsText(file);
+    }
 
+    function generateQRCode(uen, amount, editable, expiry, refNumber, company) {
+        const qrCode = new PaynowQR({
+            uen: uen,
+            amount: amount,
+            editable: editable,
+            expiry: expiry.toISOString().split('T')[0], // Format as YYYY-MM-DD
+            refNumber: refNumber,
+            company: company
+        });
 
+        const QRstring = qrCode.output();
 
+        const styledQRCode = new QRCodeStyling({
+            width: 300,
+            height: 300,
+            data: QRstring,
+            image: 'https://i.imgur.com/ipaIiBl.png',
+            imageOptions: {
+                crossOrigin: 'anonymous',
+                margin: 0,
+            },
+        });
 
-function generateQRCode(uen, amount, editable, expiry, refNumber, company) {
-    const qrCode = new PaynowQR({
-        uen: uen,
-        amount: amount,
-        editable: editable,
-        expiry: expiry.toISOString().split('T')[0], // Format as YYYY-MM-DD
-        refNumber: refNumber,
-        company: company
-    });
+        const qrcodeContainer = document.getElementById('qrcode-container');
 
-    const QRstring = qrCode.output();
+        const qrCodeDiv = document.createElement('div');
+        qrCodeDiv.classList.add('qr-code');
+        qrcodeContainer.appendChild(qrCodeDiv);
 
-    const styledQRCode = new QRCodeStyling({
-        width: 300,
-        height: 300,
-        data: QRstring,
-        image: 'https://i.imgur.com/ipaIiBl.png',
-        imageOptions: {
-            crossOrigin: 'anonymous',
-            margin: 0,
-        },
-    });
+        styledQRCode.append(qrCodeDiv);
 
-    const qrcodeContainer = document.getElementById('qrcode-container');
+        const refNumberText = document.createElement('p');
+        refNumberText.textContent = `Reference Number: ${refNumber}`;
+        qrCodeDiv.appendChild(refNumberText);
 
-    const qrCodeDiv = document.createElement('div');
-    qrCodeDiv.classList.add('qr-code');
-    qrcodeContainer.appendChild(qrCodeDiv);
-
-    styledQRCode.append(qrCodeDiv);
-
-    const refNumberText = document.createElement('p');
-    refNumberText.textContent = `Reference Number: ${refNumber}`;
-    qrCodeDiv.appendChild(refNumberText);
-}
-
+        const amountText = document.createElement('p');
+        amountText.textContent = `Amount: ${amount}`;
+        qrCodeDiv.appendChild(amountText);
+    }
 
     function downloadAllQRCode() {
         const qrcodeContainer = document.getElementById('qrcode-container');
@@ -218,7 +217,6 @@ function generateQRCode(uen, amount, editable, expiry, refNumber, company) {
         link.click();
         document.body.removeChild(link);
     }
-
 
     function updateFileName(input) {
         const fileNameElement = document.getElementById('fileName');
