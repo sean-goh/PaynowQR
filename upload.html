@@ -67,6 +67,10 @@
             color: #333;
             margin-top: 10px;
         }
+
+        #downloadButton {
+            display: none;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
     <script src="./dist/paynowqr.umd.js"></script>
@@ -76,13 +80,13 @@
 
 <div class="container">
     <button id="downloadCSVButton" type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
-    <button id="downloadButton" type="button" onclick="downloadAllQRCode()">Download All QR Codes</button>
-    
     <input type="file" id="csvFile" accept=".csv" onchange="updateFileName(this)">
     <label for="csvFile" class="custom-file-upload">Upload CSV</label>
     <span id="fileName" class="file-name">No file chosen</span>
 
     <div id="qrcode-container"></div>
+
+    <button id="downloadButton" type="button" onclick="downloadAllQRCode()">Download All QR Codes</button>
 </div>
 
 <script>
@@ -113,6 +117,9 @@
 
                 generateQRCode(uen, amount, editable === 'true', expiry, refNumber, '');
             }
+
+            // Show the download QR codes button after CSV upload is completed
+            document.getElementById('downloadButton').style.display = 'block';
         };
 
         reader.readAsText(file);
