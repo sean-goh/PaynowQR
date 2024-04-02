@@ -6,92 +6,66 @@
     <title>PayNow QR Code Generator</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
             margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
         }
 
         .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            margin-top: 20px;
-            margin-bottom: auto;
-        }
-
-        #qrcode-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .qr-code {
-            margin: 20px;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
-        .qr-code canvas {
-            width: 300px;
-            height: 300px;
-        }
-
-        .qr-code p {
-            font-size: 16px;
-            color: #333;
-            margin-top: 5px;
-        }
-
-        button {
-            margin-top: 10px;
-            padding: 8px 16px;
+        .container button,
+        .container input[type='file'],
+        .container .custom-file-upload {
+            margin: 10px;
+            padding: 12px 24px;
             font-size: 16px;
             cursor: pointer;
-            background-color: #e74c3c;
-            color: #fff;
             border: none;
             border-radius: 5px;
             transition: background-color 0.3s ease;
         }
 
-        button:hover {
-            background-color: #c0392b;
+        .container button:hover,
+        .container .custom-file-upload:hover {
+            background-color: #e74c3c;
+            color: #fff;
         }
 
-        input[type='file'] {
+        .container input[type='file'] {
             display: none;
         }
 
-        .custom-file-upload {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #e74c3c;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .custom-file-upload:hover {
-            background-color: #c0392b;
-        }
-
         .file-name {
+            display: block;
             margin-top: 5px;
             font-size: 14px;
             color: #555;
         }
 
-        /* Add margin between buttons */
-        #downloadCSVButton {
-            margin-bottom: 10px;
+        .qr-code {
+            margin: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+
+        .qr-code p {
+            font-size: 16px;
+            color: #333;
+            margin-top: 10px;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
