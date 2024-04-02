@@ -99,6 +99,11 @@
 
 <script>
     function handleCSVUpload() {
+        
+        //Clear existing QR Codes
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        qrcodeContainer.innerHTML = '';
+        
         const fileInput = document.getElementById('csvFile');
         const file = fileInput.files[0];
         const reader = new FileReader();
