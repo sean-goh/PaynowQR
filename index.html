@@ -145,6 +145,7 @@
     <script src="./dist/paynowqr.umd.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
+        
         function generateQRCode() {
             // Show the QR code container after generating the QR code
             document.getElementById('qrcode-container').style.display = 'block';
@@ -197,7 +198,6 @@
         }
 
 
-
         function downloadQRCode() {
             const qrcodeContainer = document.getElementById('qrcode-container');
             const canvas = document.createElement('canvas');
@@ -209,11 +209,12 @@
                 canvas.toBlob((blob) => {
                     const today = new Date();
                     const refNumber = document.getElementById('refNumber').value;
-                    const amount = parseFloat(document.getElementById('amount').value).toFixed(2);
+                    const amount = parseFloat(document.getElementById('amount').value);
+                    const formattedAmount = Number.isInteger(amount) ? amount.toString() : amount.toFixed(2);
                     const formattedDate = today.getFullYear().toString().substr(-2) + 
                                           ('0' + (today.getMonth() + 1)).slice(-2) + 
                                           ('0' + today.getDate()).slice(-2);
-                    const filename = `${formattedDate}_${refNumber}_${amount}.png`;
+                    const filename = `${formattedDate}_${refNumber}_${formattedAmount}.png`;
         
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
@@ -224,6 +225,7 @@
                 });
             });
         }
+
 
     </script>
 
