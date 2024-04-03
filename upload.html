@@ -115,7 +115,7 @@
             // Skip the first line (header row)
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
-                if (line === '') continue; // Skip empty lines
+                if (line === '' || /^\s*$/.test(line)) continue; // Skip empty or whitespace-only lines
     
                 const [amountStr, refNumber] = line.split(',');
                 const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
@@ -131,13 +131,14 @@
                 generateQRCode(uen, amount, editable === 'true', expiry, refNumber, '');
             }
     
-                // Show the download QR codes button after CSV upload is completed
-                document.getElementById('downloadButton').style.display = 'block';
-                document.getElementById('downloadButton').style.margin = 'auto';
-            };
-        
-            reader.readAsText(file);
-        }
+            // Show the download QR codes button after CSV upload is completed
+            document.getElementById('downloadButton').style.display = 'block';
+            document.getElementById('downloadButton').style.margin = 'auto';
+        };
+    
+        reader.readAsText(file);
+    }
+
 
 
     function generateQRCode(uen, amount, editable, expiry, refNumber, company) {
