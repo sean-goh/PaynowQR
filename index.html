@@ -123,6 +123,10 @@
                 <input type="number" id="amount" name="amount" value="0" required>
                 <br>
 
+                <label for="refNumber">Reference Number:</label>
+                <input type="text" id="refNumber" name="refNumber">
+                <br>
+
                 <button type="button" onclick="generateQRCode()">Generate QR Code</button>
             </form>
         </div>
@@ -143,6 +147,8 @@
             document.getElementById('downloadButton').style.display = 'block';
 
             const amount = parseFloat(document.getElementById('amount').value);
+            const refNumber = document.getElementById('refNumber').value || ''; // If no value is provided, use empty string
+            
             const today = new Date();
             // Set expiry date as 1 month from today
             const expiryDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
@@ -157,7 +163,8 @@
                 uen: uen,
                 amount: amount,
                 editable: editable,
-                expiry: expiry
+                expiry: expiry,
+                refNumber: refNumber
             });
 
             const QRstring = qrCode.output();
