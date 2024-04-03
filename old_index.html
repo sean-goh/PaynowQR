@@ -157,71 +157,71 @@
     <script src="./dist/paynowqr.umd.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
-        function generateQRCode() {
+    function generateQRCode() {
         // Show the QR code container after generating the QR code
-        document.getElementById('qrcode-container').style.display = 'block'; 
+        document.getElementById('qrcode-container').style.display = 'block';
         // Show the download button after QR code generation
         document.getElementById('downloadButton').style.display = 'block';
-            
-            const uen = document.getElementById('uen').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-            const editable = document.getElementById('editable').checked;
-            const expiry = document.getElementById('expiry').value;
-            const refNumber = document.getElementById('refNumber').value;
-            const company = document.getElementById('company').value;
-        
-            const qrCode = new PaynowQR({
-                uen: uen,
-                amount: amount,
-                editable: editable,
-                expiry: expiry,
-                refNumber: refNumber,
-                company: company
+
+        const uen = "201412014EB2B"; // Fixed UEN
+        const amount = parseFloat(document.getElementById('amount').value);
+        const editable = document.getElementById('editable').checked;
+        const today = new Date(); // Get today's date
+        today.setMonth(today.getMonth() + 1); // Add one month to today's date
+        const expiry = today.getFullYear() + ('0' + (today.getMonth() + 1)).slice(-2) + ('0' + today.getDate()).slice(-2); // Format expiry date as YYYYMMDD
+        const refNumber = document.getElementById('refNumber').value;
+        const company = document.getElementById('company').value;
+
+        const qrCode = new PaynowQR({
+            uen: uen,
+            amount: amount,
+            editable: editable,
+            expiry: expiry,
+            refNumber: refNumber,
+            company: company
+        });
+
+        const QRstring = qrCode.output();
+
+        const styledQRCode = new QRCodeStyling({
+            width: 300,
+            height: 300,
+            data: QRstring,
+            image: 'https://i.imgur.com/ipaIiBl.png',
+            imageOptions: {
+                crossOrigin: 'anonymous',
+                margin: 0,
+            },
+        });
+
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        qrcodeContainer.innerHTML = '';
+        styledQRCode.append(qrcodeContainer);
+
+        const refNumberText = document.createElement('p');
+        refNumberText.textContent = `Reference Number: ${refNumber}`;
+        qrcodeContainer.appendChild(refNumberText);
+    }
+
+    function downloadQRCode() {
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        const canvas = document.createElement('canvas');
+        canvas.width = qrcodeContainer.clientWidth;
+        canvas.height = qrcodeContainer.clientHeight;
+        const ctx = canvas.getContext('2d');
+
+        html2canvas(qrcodeContainer).then((canvas) => {
+            canvas.toBlob((blob) => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'qrcode.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             });
+        });
+    }
+</script>
 
-            const QRstring = qrCode.output();
-
-            const styledQRCode = new QRCodeStyling({
-                width: 300,
-                height: 300,
-                data: QRstring,
-                image: 'https://i.imgur.com/ipaIiBl.png',
-                imageOptions: {
-                    crossOrigin: 'anonymous',
-                    margin: 0,
-                },
-            });
-
-            const qrcodeContainer = document.getElementById('qrcode-container');
-            qrcodeContainer.innerHTML = '';
-            styledQRCode.append(qrcodeContainer);
-
-            const refNumberText = document.createElement('p');
-            refNumberText.textContent = `Reference Number: ${refNumber}`;
-            qrcodeContainer.appendChild(refNumberText);
-
-            // Show the download button after QR code generation
-            document.getElementById('downloadButton').style.display = 'block';
-        }
-
-        function downloadQRCode() {
-            const qrcodeContainer = document.getElementById('qrcode-container');
-            const canvas = document.createElement('canvas');
-            canvas.width = qrcodeContainer.clientWidth;
-            canvas.height = qrcodeContainer.clientHeight;
-            const ctx = canvas.getContext('2d');
-
-            html2canvas(qrcodeContainer).then((canvas) => {
-                canvas.toBlob((blob) => {
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = 'qrcode.png';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                });
-            });
-        }
-    </script>
 </body>
 </html>
