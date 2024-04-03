@@ -189,11 +189,13 @@
             refNumberText.textContent = `Reference Number: ${refNumber}`;
             qrcodeContainer.appendChild(refNumberText);
         
-            // Adding amount text
+            // Adding amount text without decimal points unless there are decimals
             const amountText = document.createElement('p');
-            amountText.textContent = `Amount (SGD): $${amount.toFixed(2)}`;
+            const formattedAmount = Number.isInteger(amount) ? `$${amount}` : `$${amount.toFixed(2)}`;
+            amountText.textContent = `Amount (SGD): ${formattedAmount}`;
             qrcodeContainer.appendChild(amountText);
         }
+
 
 
         function downloadQRCode() {
