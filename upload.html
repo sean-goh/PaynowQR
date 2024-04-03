@@ -98,46 +98,47 @@
 </div>
 
 <script>
+    
     function handleCSVUpload() {
-        
-        //Clear existing QR Codes
+        // Clear existing QR Codes
         const qrcodeContainer = document.getElementById('qrcode-container');
         qrcodeContainer.innerHTML = '';
         
         const fileInput = document.getElementById('csvFile');
         const file = fileInput.files[0];
         const reader = new FileReader();
-
+    
         reader.onload = function(event) {
             const csvData = event.target.result;
             const lines = csvData.split(/\r\n|\n/);
-
+    
             // Skip the first line (header row)
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
                 if (line === '') continue; // Skip empty lines
-
+    
                 const [amountStr, refNumber] = line.split(',');
                 const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
-
+    
                 // Set static values
                 const uen = "201412014EB2B";
                 const editable = "No";
-
+    
                 // Calculate expiry date
                 const today = new Date();
                 const expiry = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
-
+    
                 generateQRCode(uen, amount, editable === 'true', expiry, refNumber, '');
             }
+    
+                // Show the download QR codes button after CSV upload is completed
+                document.getElementById('downloadButton').style.display = 'block';
+                document.getElementById('downloadButton').style.margin = 'auto';
+            };
+        
+            reader.readAsText(file);
+        }
 
-            // Show the download QR codes button after CSV upload is completed
-            document.getElementById('downloadButton').style.display = 'block';
-            document.getElementById('downloadButton').style.margin = 'auto';
-        };
-
-        reader.readAsText(file);
-    }
 
     function generateQRCode(uen, amount, editable, expiry, refNumber, company) {
         const qrCode = new PaynowQR({
