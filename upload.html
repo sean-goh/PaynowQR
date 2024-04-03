@@ -196,7 +196,7 @@
             const amountElement = qrCode.querySelector('p:nth-of-type(2)');
     
             const refNumber = refNumberElement.textContent.split(': ')[1]; // Extract reference number
-            const amount = amountElement.textContent.split(': ')[1]; // Extract amount
+            const amount = amountElement.textContent.split(': ')[1].replace('$', ''); // Extract amount without dollar sign
     
             const canvas = document.createElement('canvas');
             canvas.width = qrCode.clientWidth;
@@ -207,7 +207,7 @@
                 canvas.toBlob((blob) => {
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
-                    link.download = `${dateString}_${refNumber}_${amount}.png`; // Set filename with date, reference number, and amount
+                    link.download = `${dateString}_${refNumber}_${amount}.png`; // Set filename with date, reference number, and amount without dollar sign
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
@@ -215,6 +215,7 @@
             });
         });
     }
+
 
 
     function downloadCSVTemplate() {
