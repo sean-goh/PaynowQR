@@ -119,20 +119,17 @@
     <div id="content-container" class="container">
         <div id="form-container">
             <form id="payNowForm">
-                <!-- Remove input fields for UEN, Expiry date, Company Name -->
-                <!-- Disallow editing of amount -->
+                <!-- Allow user to input reference number -->
+                <label for="refNumber">Reference Number:</label>
+                <input type="text" id="refNumber" name="refNumber">
+                <br>
+
                 <label for="amount">Amount to Pay:</label>
                 <input type="number" id="amount" name="amount" required>
                 <br>
 
                 <!-- Fixed "editable" value to "No" -->
                 <input type="hidden" id="editable" name="editable" value="false">
-
-                <!-- Removed Expiry Date input field -->
-
-                <!-- Removed Reference Number input field -->
-
-                <!-- Removed Company Name input field -->
 
                 <button type="button" onclick="generateQRCode()">Generate QR Code</button>
             </form>
@@ -160,8 +157,7 @@
             const today = new Date(); // Get today's date
             today.setMonth(today.getMonth() + 1); // Add one month to today's date
             const expiry = today.getFullYear() + ('0' + (today.getMonth() + 1)).slice(-2) + ('0' + today.getDate()).slice(-2); // Format expiry date as YYYYMMDD
-            const refNumber = ""; // No reference number
-            const company = ""; // No company name
+            const refNumber = document.getElementById('refNumber').value; // Get reference number from input field
 
             const qrCode = new PaynowQR({
                 uen: uen,
@@ -169,7 +165,7 @@
                 editable: editable,
                 expiry: expiry,
                 refNumber: refNumber,
-                company: company
+                company: "" // No company name
             });
 
             const QRstring = qrCode.output();
