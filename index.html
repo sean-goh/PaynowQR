@@ -202,18 +202,27 @@
             canvas.width = qrcodeContainer.clientWidth;
             canvas.height = qrcodeContainer.clientHeight;
             const ctx = canvas.getContext('2d');
-
+        
             html2canvas(qrcodeContainer).then((canvas) => {
                 canvas.toBlob((blob) => {
+                    const today = new Date();
+                    const refNumber = document.getElementById('refNumber').value;
+                    const amount = parseFloat(document.getElementById('amount').value).toFixed(2);
+                    const formattedDate = today.getFullYear().toString().substr(-2) + 
+                                          ('0' + (today.getMonth() + 1)).slice(-2) + 
+                                          ('0' + today.getDate()).slice(-2);
+                    const filename = `${formattedDate}_${refNumber}_${amount}.png`;
+        
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
-                    link.download = 'qrcode.png';
+                    link.download = filename;
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
                 });
             });
         }
+
     </script>
 
 </body>
