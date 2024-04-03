@@ -109,16 +109,8 @@
     const reader = new FileReader();
 
     reader.onload = function(event) {
-        let csvData = event.target.result;
-
-        // Remove non-printable characters and normalize line endings
-        csvData = csvData.replace(/[^\x20-\x7E]/g, ''); // Remove non-printable characters
-        csvData = csvData.replace(/\r\n/g, '\n'); // Normalize line endings
-        csvData = csvData.replace(/\r/g, '\n'); // Normalize line endings
-        csvData = csvData.replace(/\n{2,}/g, '\n'); // Remove consecutive empty lines
-        csvData = csvData.trim(); // Trim leading and trailing whitespace
-
-        const lines = csvData.split('\n');
+        const csvData = event.target.result;
+        const lines = csvData.split(/\r\n|\n/);
 
         // Skip the first line (header row)
         for (let i = 1; i < lines.length; i++) {
@@ -146,6 +138,7 @@
 
     reader.readAsText(file);
 }
+
 
 
     function generateQRCode(uen, amount, editable, expiry, refNumber, company) {
