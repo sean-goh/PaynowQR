@@ -149,14 +149,11 @@
             const amount = parseFloat(document.getElementById('amount').value);
             const refNumber = document.getElementById('refNumber').value || ''; // If no value is provided, use empty string
             
+            // Calculate expiry date
             const today = new Date();
-            // Set expiry date as 1 month from today
-            const expiryDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
-            // Format expiry date as YYYYMMDD
-            const expiry = expiryDate.getFullYear() * 10000 + (expiryDate.getMonth() + 1) * 100 + expiryDate.getDate();
-            // Fixed UEN and Allow Editing
-            const uen = '201412014EB2B';
-            const editable = false;
+            const expiry = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+            const uen = "201412014EB2B";
+            const editable = "No";
             // No company name provided
 
             const qrCode = new PaynowQR({
