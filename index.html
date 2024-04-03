@@ -150,7 +150,7 @@
             document.getElementById('qrcode-container').style.display = 'block';
             // Show the download button after QR code generation
             document.getElementById('downloadButton').style.display = 'block';
-
+        
             const uen = "201412014EB2B"; // Fixed UEN
             const amount = parseFloat(document.getElementById('amount').value);
             const editable = document.getElementById('editable').checked;
@@ -158,7 +158,7 @@
             today.setMonth(today.getMonth() + 1); // Add one month to today's date
             const expiry = today.getFullYear() + ('0' + (today.getMonth() + 1)).slice(-2) + ('0' + today.getDate()).slice(-2); // Format expiry date as YYYYMMDD
             const refNumber = document.getElementById('refNumber').value; // Get reference number from input field
-
+        
             const qrCode = new PaynowQR({
                 uen: uen,
                 amount: amount,
@@ -167,9 +167,9 @@
                 refNumber: refNumber,
                 company: "" // No company name
             });
-
+        
             const QRstring = qrCode.output();
-
+        
             const styledQRCode = new QRCodeStyling({
                 width: 300,
                 height: 300,
@@ -180,15 +180,21 @@
                     margin: 0,
                 },
             });
-
+        
             const qrcodeContainer = document.getElementById('qrcode-container');
             qrcodeContainer.innerHTML = '';
             styledQRCode.append(qrcodeContainer);
-
+        
             const refNumberText = document.createElement('p');
             refNumberText.textContent = `Reference Number: ${refNumber}`;
             qrcodeContainer.appendChild(refNumberText);
+        
+            // Adding amount text
+            const amountText = document.createElement('p');
+            amountText.textContent = `Amount (SGD): $${amount.toFixed(2)}`;
+            qrcodeContainer.appendChild(amountText);
         }
+
 
         function downloadQRCode() {
             const qrcodeContainer = document.getElementById('qrcode-container');
