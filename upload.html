@@ -47,9 +47,6 @@
             color: #fff; /* Change text color to white */
         }
 
-
-
-
         .container input[type='file'] {
             display: none;
         }
@@ -85,160 +82,148 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
+    <div class="container">
+        <button id="downloadCSVButton" type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
+        <input type="file" id="csvFile" accept=".csv" onchange="updateFileName(this)">
+        <label for="csvFile" class="custom-file-upload">Upload CSV</label>
+        <span id="fileName" class="file-name">No file chosen</span>
 
-<div class="container">
-    <button id="downloadCSVButton" type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
-    <input type="file" id="csvFile" accept=".csv" onchange="updateFileName(this)">
-    <label for="csvFile" class="custom-file-upload">Upload CSV</label>
-    <span id="fileName" class="file-name">No file chosen</span>
+        <div id="qrcode-container"></div>
 
-    <div id="qrcode-container"></div>
+        <button id="downloadButton" type="button" onclick="downloadAllQRCode()">Download All QR Codes</button>
+    </div>
 
-    <button id="downloadButton" type="button" onclick="downloadAllQRCode()">Download All QR Codes</button>
-</div>
+    <script>
+        function handleCSVUpload() {
+            // Clear existing QR Codes
+            const qrcodeContainer = document.getElementById('qrcode-container');
+            qrcodeContainer.innerHTML = '';
 
-<script>
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            const reader = new FileReader();
 
-    function handleCSVUpload() {
-    // Clear existing QR Codes
-    const qrcodeContainer = document.getElementById('qrcode-container');
-    qrcodeContainer.innerHTML = '';
-    
-    const fileInput = document.getElementById('csvFile');
-    const file = fileInput.files[0];
-    const reader = new FileReader();
+            reader.onload = function(event) {
+                const csvData = event.target.result;
+                const lines = csvData.split(/\r\n|\n/);
 
-    reader.onload = function(event) {
-        const csvData = event.target.result;
-        const lines = csvData.split(/\r\n|\n/);
+                // Skip the first line (header row)
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
+                    if (!line || !line.trim()) continue; // Skip if line is empty or consists of only whitespace
 
-        // Skip the first line (header row)
-        for (let i = 1; i < lines.length; i++) {
-            const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
-            if (!line || !line.trim()) continue; // Skip if line is empty or consists of only whitespace
+                    const [amountStr, refNumber] = line.split(',');
+                    const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
 
-            const [amountStr, refNumber] = line.split(',');
-            const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
+                    // Set static values
+                    const uen = "201412014EB2B";
+                    const editable = "No";
 
-            // Set static values
-            const uen = "201412014EB2B";
-            const editable = "No";
+                    generateQRCode(uen, amount, editable === 'true', refNumber, '');
+                }
 
-            // Calculate expiry date
-            const today = new Date();
-            const expiry = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+                // Show the download QR codes button after CSV upload is completed
+                document.getElementById('downloadButton').style.display = 'block';
+                document.getElementById('downloadButton').style.margin = 'auto';
+            };
 
-            generateQRCode(uen, amount, editable === 'true', expiry, refNumber, '');
+            reader.readAsText(file);
         }
 
-        // Show the download QR codes button after CSV upload is completed
-        document.getElementById('downloadButton').style.display = 'block';
-        document.getElementById('downloadButton').style.margin = 'auto';
-    };
+        function generateQRCode(uen, amount, editable, refNumber, company) {
+            const qrCode = new PaynowQR({
+                uen: uen,
+                amount: amount,
+                editable: editable,
+                refNumber: refNumber,
+                company: company
+            });
 
-    reader.readAsText(file);
-}
+            const QRstring = qrCode.output();
 
+            const styledQRCode = new QRCodeStyling({
+                width: 300,
+                height: 300,
+                data: QRstring,
+                image: 'https://i.imgur.com/ipaIiBl.png',
+                imageOptions: {
+                    crossOrigin: 'anonymous',
+                    margin: 0,
+                },
+            });
 
+            const qrcodeContainer = document.getElementById('qrcode-container');
 
-    function generateQRCode(uen, amount, editable, expiry, refNumber, company) {
-        const qrCode = new PaynowQR({
-            uen: uen,
-            amount: amount,
-            editable: editable,
-            expiry: expiry.toISOString().split('T')[0], // Format as YYYY-MM-DD
-            refNumber: refNumber,
-            company: company
-        });
+            const qrCodeDiv = document.createElement('div');
+            qrCodeDiv.classList.add('qr-code');
+            qrcodeContainer.appendChild(qrCodeDiv);
 
-        const QRstring = qrCode.output();
+            styledQRCode.append(qrCodeDiv);
 
-        const styledQRCode = new QRCodeStyling({
-            width: 300,
-            height: 300,
-            data: QRstring,
-            image: 'https://i.imgur.com/ipaIiBl.png',
-            imageOptions: {
-                crossOrigin: 'anonymous',
-                margin: 0,
-            },
-        });
+            const refNumberText = document.createElement('p');
+            refNumberText.textContent = `Reference Number: ${refNumber}`;
+            qrCodeDiv.appendChild(refNumberText);
 
-        const qrcodeContainer = document.getElementById('qrcode-container');
+            const amountText = document.createElement('p');
+            amountText.textContent = `Amount (SGD): $${amount}`;
+            qrCodeDiv.appendChild(amountText);
+        }
 
-        const qrCodeDiv = document.createElement('div');
-        qrCodeDiv.classList.add('qr-code');
-        qrcodeContainer.appendChild(qrCodeDiv);
-
-        styledQRCode.append(qrCodeDiv);
-
-        const refNumberText = document.createElement('p');
-        refNumberText.textContent = `Reference Number: ${refNumber}`;
-        qrCodeDiv.appendChild(refNumberText);
-
-        const amountText = document.createElement('p');
-        amountText.textContent = `Amount (SGD): $${amount}`;
-        qrCodeDiv.appendChild(amountText);
-    }
-
-    function downloadAllQRCode() {
-        const qrcodeContainer = document.getElementById('qrcode-container');
-        const qrCodes = qrcodeContainer.querySelectorAll('.qr-code');
-    
-        const today = new Date();
-        const yy = today.getFullYear().toString().slice(-2);
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const dateString = `${yy}${mm}${dd}`;
-    
-        qrCodes.forEach((qrCode, index) => {
-            const refNumberElement = qrCode.querySelector('p:nth-of-type(1)');
-            const amountElement = qrCode.querySelector('p:nth-of-type(2)');
-    
-            const refNumber = refNumberElement.textContent.split(': ')[1]; // Extract reference number
-            const amount = amountElement.textContent.split(': ')[1].replace('$', ''); // Extract amount without dollar sign
-    
-            const canvas = document.createElement('canvas');
-            canvas.width = qrCode.clientWidth;
-            canvas.height = qrCode.clientHeight;
-            const ctx = canvas.getContext('2d');
-    
-            html2canvas(qrCode).then((canvas) => {
-                canvas.toBlob((blob) => {
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = `${dateString}_${refNumber}_${amount}.png`; // Set filename with date, reference number, and amount without dollar sign
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+        function downloadAllQRCode() {
+            const qrcodeContainer = document.getElementById('qrcode-container');
+            const qrCodes = qrcodeContainer.querySelectorAll('.qr-code');
+        
+            const today = new Date();
+            const yy = today.getFullYear().toString().slice(-2);
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const dateString = `${yy}${mm}${dd}`;
+        
+            qrCodes.forEach((qrCode, index) => {
+                const refNumberElement = qrCode.querySelector('p:nth-of-type(1)');
+                const amountElement = qrCode.querySelector('p:nth-of-type(2)');
+        
+                const refNumber = refNumberElement.textContent.split(': ')[1]; // Extract reference number
+                const amount = amountElement.textContent.split(': ')[1].replace('$', ''); // Extract amount without dollar sign
+        
+                const canvas = document.createElement('canvas');
+                canvas.width = qrCode.clientWidth;
+                canvas.height = qrCode.clientHeight;
+                const ctx = canvas.getContext('2d');
+        
+                html2canvas(qrCode).then((canvas) => {
+                    canvas.toBlob((blob) => {
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = `${dateString}_${refNumber}_${amount}.png`; // Set filename with date, reference number, and amount without dollar sign
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
                 });
             });
-        });
-    }
-
-
-
-    function downloadCSVTemplate() {
-        const csvTemplate = 'Amount,RefNumber\n';
-        const blob = new Blob([csvTemplate], { type: 'text/csv' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'paynow_template.csv';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function updateFileName(input) {
-        const fileNameElement = document.getElementById('fileName');
-        if (input.files.length > 0) {
-            fileNameElement.textContent = input.files[0].name;
-            handleCSVUpload(); // Automatically trigger CSV upload
-        } else {
-            fileNameElement.textContent = 'No file chosen';
         }
-    }
-</script>
 
+        function downloadCSVTemplate() {
+            const csvTemplate = 'Amount,RefNumber\n';
+            const blob = new Blob([csvTemplate], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'paynow_template.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function updateFileName(input) {
+            const fileNameElement = document.getElementById('fileName');
+            if (input.files.length > 0) {
+                fileNameElement.textContent = input.files[0].name;
+                handleCSVUpload(); // Automatically trigger CSV upload
+            } else {
+                fileNameElement.textContent = 'No file chosen';
+            }
+        }
+    </script>
 </body>
 </html>
