@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayNow QR Code Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .container button,
+        .container input[type='file'],
+        .container .custom-file-upload {
+            margin: 10px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            width: 500px;
+            display: inline-block;
+            text-align: center;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .container button:hover,
+        .container .custom-file-upload:hover {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        .container input[type='file'] {
+            display: none;
+        }
+
+        .file-name {
+            display: block;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .qr-code {
+            margin: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+
+        .qr-code p {
+            font-size: 16px;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .whatsapp-button {
+            margin-top: 10px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            width: 200px;
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        .whatsapp-button:hover {
+            background-color: #45a049;
+        }
+
+        #downloadButton {
+            display: none;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <button id="downloadCSVButton" type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
+        <input type="file" id="csvFile" accept=".csv" onchange="updateFileName(this)">
+        <label for="csvFile" class="custom-file-upload">Upload CSV</label>
+        <span id="fileName" class="file-name">No file chosen</span>
+
+        <div id="qrcode-container"></div>
+
+        <button id="downloadButton" type="button" onclick="downloadAllQRCode()">Download All QR Codes</button>
+    </div>
+
+    <script>
+        function handleCSVUpload() {
+            const qrcodeContainer = document.getElementById('qrcode-container');
+            qrcodeContainer.innerHTML = '';
+
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const csvData = event.target.result;
+                const lines = csvData.split(/\r\n|\n/);
+
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line || !line.trim()) continue;
+
+                    const [amountStr, refNumber] = line.split(',');
+                    const amount = parseFloat(amountStr.replace(/[^0-9.]/g, ''));
+
+                    const uen = "201412014ECB1";
+                    const editable = "No";
+
+                    generateQRCode(uen, amount, editable === 'true', refNumber, '');
+                }
+
+                document.getElementById('downloadButton').style.display = 'block';
+                document.getElementById('downloadButton').style.margin = 'auto';
+            };
+
+            reader.readAsText(file);
+        }
+
+        function generateQRCode(uen, amount, editable, refNumber, company) {
+            const qrCodeContainer = document.getElementById('qrcode-container');
+            const qrCodeDiv = document.createElement('div');
+            qrCodeDiv.classList.add('qr-code');
+            qrCodeContainer.appendChild(qrCodeDiv);
+
+            const qrCode = new PaynowQR({
+                uen: uen,
+                amount: amount,
+                editable: editable,
+                refNumber: refNumber,
+                company: company
+            });
+
+            const QRstring = qrCode.output();
+
+            const styledQRCode = new QRCodeStyling({
+                width: 300,
+                height: 300,
+                data: QRstring,
+                image: 'https://i.imgur.com/ipaIiBl.png',
+                imageOptions: {
+                    crossOrigin: 'anonymous',
+                    margin: 0,
+                },
+            });
+
+            styledQRCode.append(qrCodeDiv);
+
+            const refNumberText = document.createElement('p');
+            refNumberText.textContent = `Reference Number: ${refNumber}`;
+            qrCodeDiv.appendChild(refNumberText);
+
+            const amountText = document.createElement('p');
+            amountText.textContent = `Amount (SGD): $${amount}`;
+            qrCodeDiv.appendChild(amountText);
+
+            const whatsappButton = document.createElement('button');
+            whatsappButton.textContent = 'Open WhatsApp';
+            whatsappButton.classList.add('whatsapp-button');
+            whatsappButton.addEventListener('click', function() {
+                openWhatsAppWithQR(qrCodeDiv);
+            });
+            qrCodeDiv.appendChild(whatsappButton);
+        }
+
+        function openWhatsAppWithQR(qrCodeDiv) {
+            const canvas = document.createElement('canvas');
+            canvas.width = qrCodeDiv.clientWidth;
+            canvas.height = qrCodeDiv.clientHeight;
+            const ctx = canvas.getContext('2d');
+
+            html2canvas(qrCodeDiv).then((canvas) => {
+                canvas.toBlob((blob) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = function() {
+                        const base64data = reader.result;
+                        const message = `Check out this QR code for payment: ${base64data}`;
+                        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                        window.open(whatsappUrl, '_blank');
+                    };
+                });
+            });
+        }
+
+        function downloadAllQRCode() {
+            const qrcodeContainer = document.getElementById('qrcode-container');
+            const qrCodes = qrcodeContainer.querySelectorAll('.qr-code');
+        
+            const today = new Date();
+            const yy = today.getFullYear().toString().slice(-2);
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const dateString = `${yy}${mm}${dd}`;
+        
+            qrCodes.forEach((qrCode, index) => {
+                const refNumberElement = qrCode.querySelector('p:nth-of-type(1)');
+                const amountElement = qrCode.querySelector('p:nth-of-type(2)');
+        
+                const refNumber = refNumberElement.textContent.split(': ')[1];
+                const amount = amountElement.textContent.split(': ')[1].replace('$', '');
+        
+                const canvas = document.createElement('canvas');
+                canvas.width = qrCode.clientWidth;
+                canvas.height = qrCode.clientHeight;
+                const ctx = canvas.getContext('2d');
+        
+                html2canvas(qrCode).then((canvas) => {
+                    canvas.toBlob((blob) => {
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = `${dateString}_${refNumber}_${amount}.png`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+                });
+            });
+        }
+
+        function downloadCSVTemplate() {
+            const csvTemplate = 'Amount,RefNumber\n';
+            const blob = new Blob([csvTemplate], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'paynow_template.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function updateFileName(input) {
+            const fileNameElement = document.getElementById('fileName');
+            if (input.files.length > 0) {
+                fileNameElement.textContent = input.files[0].name;
+                handleCSVUpload();
+            } else {
+                fileNameElement.textContent = 'No file chosen';
+            }
+        }
+
+        // Call handleCSVUpload initially if a file is chosen
+        const csvFileInput = document.getElementById('csvFile');
+        if (csvFileInput.files.length > 0) {
+            handleCSVUpload();
+        }
+    </script>
+</body>
+</html>
