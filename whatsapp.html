@@ -200,13 +200,8 @@
                     reader.readAsDataURL(blob);
                     reader.onloadend = function() {
                         const base64data = reader.result;
-
-                        const formData = new FormData();
-                        formData.append('image', blob, 'qrcode.png');
-
                         const message = `Check out this QR code for payment: ${base64data}`;
                         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-
                         window.open(whatsappUrl, '_blank');
                     };
                 });
