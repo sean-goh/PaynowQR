@@ -34,17 +34,17 @@
             border: none;
             border-radius: 5px;
             transition: background-color 0.3s ease;
-            width: 500px; /* Adjust the width as needed */
-            display: inline-block; /* Make both buttons the same length */
-            text-align: center; /* Center text */
-            background-color: #f0f0f0; /* Set background color */
-            color: #333; /* Set text color */
+            width: 500px;
+            display: inline-block;
+            text-align: center;
+            background-color: #f0f0f0;
+            color: #333;
         }
-        
+
         .container button:hover,
         .container .custom-file-upload:hover {
-            background-color: #e74c3c; /* Change background color on hover to red */
-            color: #fff; /* Change text color to white */
+            background-color: #e74c3c;
+            color: #fff;
         }
 
         .container input[type='file'] {
@@ -73,12 +73,28 @@
             margin-top: 10px;
         }
 
+        .whatsapp-button {
+            margin-top: 10px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            width: 200px;
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        .whatsapp-button:hover {
+            background-color: #45a049;
+        }
+
         #downloadButton {
             display: none;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
-    <script src="./dist/paynowqr.umd.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
@@ -95,7 +111,6 @@
 
     <script>
         function handleCSVUpload() {
-            // Clear existing QR Codes
             const qrcodeContainer = document.getElementById('qrcode-container');
             qrcodeContainer.innerHTML = '';
 
@@ -107,22 +122,19 @@
                 const csvData = event.target.result;
                 const lines = csvData.split(/\r\n|\n/);
 
-                // Skip the first line (header row)
                 for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
-                    if (!line || !line.trim()) continue; // Skip if line is empty or consists of only whitespace
+                    const line = lines[i].trim();
+                    if (!line || !line.trim()) continue;
 
                     const [amountStr, refNumber] = line.split(',');
-                    const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
+                    const amount = parseFloat(amountStr.replace(/[^0-9.]/g, ''));
 
-                    // Set static values
                     const uen = "201412014ECB1";
                     const editable = "No";
 
                     generateQRCode(uen, amount, editable === 'true', refNumber, '');
                 }
 
-                // Show the download QR codes button after CSV upload is completed
                 document.getElementById('downloadButton').style.display = 'block';
                 document.getElementById('downloadButton').style.margin = 'auto';
             };
@@ -131,6 +143,11 @@
         }
 
         function generateQRCode(uen, amount, editable, refNumber, company) {
+            const qrCodeContainer = document.getElementById('qrcode-container');
+            const qrCodeDiv = document.createElement('div');
+            qrCodeDiv.classList.add('qr-code');
+            qrCodeContainer.appendChild(qrCodeDiv);
+
             const qrCode = new PaynowQR({
                 uen: uen,
                 amount: amount,
@@ -152,12 +169,6 @@
                 },
             });
 
-            const qrcodeContainer = document.getElementById('qrcode-container');
-
-            const qrCodeDiv = document.createElement('div');
-            qrCodeDiv.classList.add('qr-code');
-            qrcodeContainer.appendChild(qrCodeDiv);
-
             styledQRCode.append(qrCodeDiv);
 
             const refNumberText = document.createElement('p');
@@ -168,30 +179,38 @@
             amountText.textContent = `Amount (SGD): $${amount}`;
             qrCodeDiv.appendChild(amountText);
 
-// Create a button for sharing via WhatsApp
-            const shareButton = document.createElement('button');
-            shareButton.textContent = 'Share via WhatsApp';
-            shareButton.onclick = function () {
-                const canvas = document.createElement('canvas');
-                canvas.width = qrCodeDiv.clientWidth;
-                canvas.height = qrCodeDiv.clientHeight;
-                const ctx = canvas.getContext('2d');
-                html2canvas(qrCodeDiv).then(canvas => {
-                    canvas.toBlob(blob => {
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(blob);
-                        link.download = `${refNumber}_${amount}.png`; // Filename
-                        link.style.display = 'none';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
+            const whatsappButton = document.createElement('button');
+            whatsappButton.textContent = 'Open WhatsApp';
+            whatsappButton.classList.add('whatsapp-button');
+            whatsappButton.addEventListener('click', function() {
+                openWhatsAppWithQR(qrCodeDiv);
+            });
+            qrCodeDiv.appendChild(whatsappButton);
+        }
 
-                        const whatsappURL = `https://wa.me/?text=Sharing QR Code`;
-                        window.open(whatsappURL);
-                     });
+        function openWhatsAppWithQR(qrCodeDiv) {
+            const canvas = document.createElement('canvas');
+            canvas.width = qrCodeDiv.clientWidth;
+            canvas.height = qrCodeDiv.clientHeight;
+            const ctx = canvas.getContext('2d');
+
+            html2canvas(qrCodeDiv).then((canvas) => {
+                canvas.toBlob((blob) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = function() {
+                        const base64data = reader.result;
+
+                        const formData = new FormData();
+                        formData.append('image', blob, 'qrcode.png');
+
+                        const message = `Check out this QR code for payment: ${base64data}`;
+                        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+
+                        window.open(whatsappUrl, '_blank');
+                    };
                 });
-            };
-            qrCodeDiv.appendChild(shareButton);
+            });
         }
 
         function downloadAllQRCode() {
@@ -208,8 +227,8 @@
                 const refNumberElement = qrCode.querySelector('p:nth-of-type(1)');
                 const amountElement = qrCode.querySelector('p:nth-of-type(2)');
         
-                const refNumber = refNumberElement.textContent.split(': ')[1]; // Extract reference number
-                const amount = amountElement.textContent.split(': ')[1].replace('$', ''); // Extract amount without dollar sign
+                const refNumber = refNumberElement.textContent.split(': ')[1];
+                const amount = amountElement.textContent.split(': ')[1].replace('$', '');
         
                 const canvas = document.createElement('canvas');
                 canvas.width = qrCode.clientWidth;
@@ -220,7 +239,7 @@
                     canvas.toBlob((blob) => {
                         const link = document.createElement('a');
                         link.href = URL.createObjectURL(blob);
-                        link.download = `${dateString}_${refNumber}_${amount}.png`; // Set filename with date, reference number, and amount without dollar sign
+                        link.download = `${dateString}_${refNumber}_${amount}.png`;
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
@@ -244,10 +263,16 @@
             const fileNameElement = document.getElementById('fileName');
             if (input.files.length > 0) {
                 fileNameElement.textContent = input.files[0].name;
-                handleCSVUpload(); // Automatically trigger CSV upload
+                handleCSVUpload();
             } else {
                 fileNameElement.textContent = 'No file chosen';
             }
+        }
+
+        // Call handleCSVUpload initially if a file is chosen
+        const csvFileInput = document.getElementById('csvFile');
+        if (csvFileInput.files.length > 0) {
+            handleCSVUpload();
         }
     </script>
 </body>
