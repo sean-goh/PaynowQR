@@ -127,7 +127,7 @@
                     const uen = "201412014ECB1";
                     const editable = "No";
         
-                    generateQRCode(uen, amount, editable === 'true', refNumber, phoneNumber, trackingID);
+                    generateQRCode(uen, amount, editable === 'false', refNumber, phoneNumber, trackingID);
                 }
         
                 // Show the download QR codes button after CSV upload is completed
@@ -139,7 +139,7 @@
         }
 
 
-        function generateQRCode(uen, amount, editable, refNumber, company) {
+        function generateQRCode(uen, amount, editable, refNumber, phoneNumber, trackingID) {
             const qrCode = new PaynowQR({
                 uen: uen,
                 amount: amount,
@@ -186,7 +186,7 @@
             whatsappButton.textContent = 'Send via WhatsApp';
             whatsappButton.classList.add('whatsapp-button');
             whatsappButton.onclick = function() {
-                sendViaWhatsApp(QRstring);
+                sendViaWhatsApp(amount, phoneNumber, trackingID);
             };
             qrContainer.appendChild(whatsappButton);
         }
@@ -248,8 +248,8 @@
             }
         }
 
-        function sendViaWhatsApp(qrData, phoneNumber, trackingID, amount) {
-            const message = encodeURIComponent(`Sending you the QR Code: ${qrData}\nAmount (SGD): $${amount}\nTracking ID: ${trackingID}`);
+        function sendViaWhatsApp(amount, phoneNumber, trackingID) {
+            const message = encodeURIComponent(`Amount (SGD): $${amount}\nTracking ID: ${trackingID}`);
         
             // Open WhatsApp with the QR code image attached
             window.open(`https://wa.me/${phoneNumber}?text=${message}`);
