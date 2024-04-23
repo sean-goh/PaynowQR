@@ -185,7 +185,13 @@
             whatsappButton.textContent = 'Send via WhatsApp';
             whatsappButton.classList.add('whatsapp-button');
             whatsappButton.onclick = function() {
-                sendViaWhatsApp(QRstring);
+                const qrCodeDiv = qrContainer.querySelector('.qr-code');
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+        
+                html2canvas(qrCodeDiv).then((canvas) => {
+                    sendViaWhatsApp(QRstring, canvas); // Pass QR code data and canvas to sendViaWhatsApp
+                });
             };
             qrContainer.appendChild(whatsappButton);
         }
@@ -246,36 +252,15 @@
             }
         }
 
-        function sendViaWhatsApp(qrData) {
+        function sendViaWhatsApp(qrData, qrImage) {
+            // Replace the following number with your desired WhatsApp number
             const phoneNumber = '+60122188693';
-            const message = encodeURIComponent(`Sending you the QR Code: ${qrData}`);
-        
-            // Get the QR code container element
-            const qrcodeContainer = document.getElementById('qrcode-container');
-        
-            // Create a canvas element to draw the QR code image
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-        
-            // Get the QR code image element from the container
-            const qrCodeImage = qrcodeContainer.querySelector('.qr-code img');
-        
-            // Set canvas dimensions to match the image dimensions
-            canvas.width = qrCodeImage.width;
-            canvas.height = qrCodeImage.height;
-        
-            // Draw the QR code image onto the canvas
-            ctx.drawImage(qrCodeImage, 0, 0);
-        
-            // Convert canvas to blob URL
-            canvas.toBlob(blob => {
-                const blobUrl = URL.createObjectURL(blob);
-                // Open WhatsApp with the QR code image attached
-                window.open(`https://wa.me/${phoneNumber}?text=${message}&media=${blobUrl}`);
-            });
+            const message = encodeURIComponent(`Sending you the QR Code`);
+            const base64Image = qrImage.toDataURL(); // Convert canvas to base64 image data
+            
+            // Open WhatsApp with the QR code image attached
+            window.open(`https://wa.me/${phoneNumber}?text=${message}&attachment=${base64Image}`);
         }
-
-}
 
     </script>
 </body>
