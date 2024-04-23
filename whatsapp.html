@@ -110,98 +110,102 @@
     </div>
 
     <script>
-        function handleCSVUpload() {
-            const qrcodeContainer = document.getElementById('qrcode-container');
-            qrcodeContainer.innerHTML = '';
+function handleCSVUpload() {
+    // Clear existing QR Codes
+    const qrcodeContainer = document.getElementById('qrcode-container');
+    qrcodeContainer.innerHTML = '';
 
-            const fileInput = document.getElementById('csvFile');
-            const file = fileInput.files[0];
-            const reader = new FileReader();
+    const fileInput = document.getElementById('csvFile');
+    const file = fileInput.files[0];
+    const reader = new FileReader();
 
-            reader.onload = function(event) {
-                const csvData = event.target.result;
-                const lines = csvData.split(/\r\n|\n/);
+    reader.onload = function(event) {
+        const csvData = event.target.result;
+        const lines = csvData.split(/\r\n|\n/);
 
-                for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (!line || !line.trim()) continue;
+        // Skip the first line (header row)
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
+            if (!line || !line.trim()) continue; // Skip if line is empty or consists of only whitespace
 
-                    const [amountStr, refNumber] = line.split(',');
-                    const amount = parseFloat(amountStr.replace(/[^0-9.]/g, ''));
+            const [amountStr, refNumber] = line.split(',');
+            const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
 
-                    const uen = "201412014ECB1";
-                    const editable = "No";
+            // Set static values
+            const uen = "201412014ECB1";
+            const editable = "No";
 
-                    generateQRCode(uen, amount, editable === 'true', refNumber, '');
-                }
-
-                document.getElementById('downloadButton').style.display = 'block';
-                document.getElementById('downloadButton').style.margin = 'auto';
-            };
-
-            reader.readAsText(file);
+            generateQRCode(uen, amount, editable === 'true', refNumber, '', sendViaWhatsApp);
         }
 
-        function generateQRCode(uen, amount, editable, refNumber, company) {
-            const qrCode = new PaynowQR({
-                uen: uen,
-                amount: amount,
-                editable: editable,
-                refNumber: refNumber,
-                company: company
-            });
-        
-            const QRstring = qrCode.output();
-        
-            const styledQRCode = new QRCodeStyling({
-                width: 300,
-                height: 300,
-                data: QRstring,
-                image: 'https://i.imgur.com/ipaIiBl.png',
-                imageOptions: {
-                    crossOrigin: 'anonymous',
-                    margin: 0,
-                },
-            });
-        
-            const qrcodeContainer = document.getElementById('qrcode-container');
-        
-            const qrCodeDiv = document.createElement('div');
-            qrCodeDiv.classList.add('qr-code');
-            qrcodeContainer.appendChild(qrCodeDiv);
-        
-            styledQRCode.append(qrCodeDiv);
-        
-            const refNumberText = document.createElement('p');
-            refNumberText.textContent = `Reference Number: ${refNumber}`;
-            qrCodeDiv.appendChild(refNumberText);
-        
-            const amountText = document.createElement('p');
-            amountText.textContent = `Amount (SGD): $${amount}`;
-            qrCodeDiv.appendChild(amountText);
-        
-            // Create a button to send QR code via WhatsApp
-            const whatsappButton = document.createElement('button');
-            whatsappButton.textContent = 'Send via WhatsApp';
-            whatsappButton.onclick = function() {
-                sendViaWhatsApp(qrCodeDiv);
-            };
-            qrCodeDiv.appendChild(whatsappButton);
-        }
-        
-        function sendViaWhatsApp(qrCodeDiv) {
-            // Extract QR code image from the generated div
-            html2canvas(qrCodeDiv).then((canvas) => {
-                const imageDataURL = canvas.toDataURL('image/png');
-        
-                // Replace the following number with your desired WhatsApp number
-                const phoneNumber = '+60122188693';
-                const message = encodeURIComponent(`Sending you the QR Code`);
-        
-                // Open WhatsApp with the QR code image attached
-                window.open(`https://wa.me/${phoneNumber}?text=${message}&attachment=${imageDataURL}`);
-            });
-        }
+        // Show the download QR codes button after CSV upload is completed
+        document.getElementById('downloadButton').style.display = 'block';
+        document.getElementById('downloadButton').style.margin = 'auto';
+    };
+
+    reader.readAsText(file);
+}
+
+function generateQRCode(uen, amount, editable, refNumber, company, callback) {
+    const qrCode = new PaynowQR({
+        uen: uen,
+        amount: amount,
+        editable: editable,
+        refNumber: refNumber,
+        company: company
+    });
+
+    const QRstring = qrCode.output();
+
+    const styledQRCode = new QRCodeStyling({
+        width: 300,
+        height: 300,
+        data: QRstring,
+        image: 'https://i.imgur.com/ipaIiBl.png',
+        imageOptions: {
+            crossOrigin: 'anonymous',
+            margin: 0,
+        },
+    });
+
+    const qrcodeContainer = document.getElementById('qrcode-container');
+
+    const qrCodeDiv = document.createElement('div');
+    qrCodeDiv.classList.add('qr-code');
+    qrcodeContainer.appendChild(qrCodeDiv);
+
+    styledQRCode.append(qrCodeDiv);
+
+    const refNumberText = document.createElement('p');
+    refNumberText.textContent = `Reference Number: ${refNumber}`;
+    qrCodeDiv.appendChild(refNumberText);
+
+    const amountText = document.createElement('p');
+    amountText.textContent = `Amount (SGD): $${amount}`;
+    qrCodeDiv.appendChild(amountText);
+
+    // Create a button to send QR code via WhatsApp
+    const whatsappButton = document.createElement('button');
+    whatsappButton.textContent = 'Send via WhatsApp';
+    whatsappButton.onclick = function() {
+        callback(qrCodeDiv);
+    };
+    qrCodeDiv.appendChild(whatsappButton);
+}
+
+function sendViaWhatsApp(qrCodeDiv) {
+    // Extract QR code image from the generated div
+    html2canvas(qrCodeDiv).then((canvas) => {
+        const imageDataURL = canvas.toDataURL('image/png');
+
+        // Replace the following number with your desired WhatsApp number
+        const phoneNumber = 'YOUR_PHONE_NUMBER';
+        const message = encodeURIComponent(`Sending you the QR Code`);
+
+        // Open WhatsApp with the QR code image attached
+        window.open(`https://wa.me/${phoneNumber}?text=${message}&attachment=${imageDataURL}`);
+    });
+}
 
 
         function downloadAllQRCode() {
