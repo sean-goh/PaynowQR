@@ -1,4 +1,3 @@
-User
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,37 +106,38 @@ User
             // Clear existing QR Codes
             const qrcodeContainer = document.getElementById('qrcode-container');
             qrcodeContainer.innerHTML = '';
-
+        
             const fileInput = document.getElementById('csvFile');
             const file = fileInput.files[0];
             const reader = new FileReader();
-
+        
             reader.onload = function(event) {
                 const csvData = event.target.result;
                 const lines = csvData.split(/\r\n|\n/);
-
+        
                 // Skip the first line (header row)
                 for (let i = 1; i < lines.length; i++) {
                     const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
                     if (!line || !line.trim()) continue; // Skip if line is empty or consists of only whitespace
-
-                    const [amountStr, refNumber] = line.split(',');
+        
+                    const [amountStr, refNumber, phoneNumber, trackingID] = line.split(',');
                     const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
-
+        
                     // Set static values
                     const uen = "201412014ECB1";
                     const editable = "No";
-
-                    generateQRCode(uen, amount, editable === 'true', refNumber, '');
+        
+                    generateQRCode(uen, amount, editable === 'true', refNumber, phoneNumber, trackingID);
                 }
-
+        
                 // Show the download QR codes button after CSV upload is completed
                 document.getElementById('downloadButton').style.display = 'block';
                 document.getElementById('downloadButton').style.margin = 'auto';
             };
-
+        
             reader.readAsText(file);
         }
+
 
         function generateQRCode(uen, amount, editable, refNumber, company) {
             const qrCode = new PaynowQR({
@@ -227,7 +227,7 @@ User
         }
 
         function downloadCSVTemplate() {
-            const csvTemplate = 'Amount,RefNumber\n';
+            const csvTemplate = 'Amount,RefNumber,PhoneNumber,TrackingID\n'; // Include new columns
             const blob = new Blob([csvTemplate], { type: 'text/csv' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -236,6 +236,7 @@ User
             link.click();
             document.body.removeChild(link);
         }
+
 
         function updateFileName(input) {
             const fileNameElement = document.getElementById('fileName');
@@ -247,14 +248,13 @@ User
             }
         }
 
-        function sendViaWhatsApp(qrData) {
-            // Replace the following number with your desired WhatsApp number
-            const phoneNumber = '+60122188693';
-            const message = encodeURIComponent(`Sending you the QR Code: ${qrData}`);
+        function sendViaWhatsApp(qrData, phoneNumber, trackingID, amount) {
+            const message = encodeURIComponent(`Sending you the QR Code: ${qrData}\nAmount (SGD): $${amount}\nTracking ID: ${trackingID}`);
         
             // Open WhatsApp with the QR code image attached
             window.open(`https://wa.me/${phoneNumber}?text=${message}`);
         }
+
     </script>
 </body>
 </html>
