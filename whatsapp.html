@@ -255,17 +255,41 @@
             }
         }
 
-        function sendViaWhatsApp(qrData, qrImage) {
-            // Replace the following number with your desired WhatsApp number
-            const phoneNumber = '+60122188693';
-            const message = encodeURIComponent(`Sending you the QR Code`);
-            
-            // Convert canvas to base64 image data
-            const base64Image = qrImage.toDataURL("image/png").replace("data:image/png;base64,", "");
-            
-            // Open WhatsApp with the QR code image attached
-            window.open(`https://wa.me/${phoneNumber}?text=${message}&attachment=${base64Image}`);
+function sendViaWhatsApp(qrData, qrImage) {
+    const phoneNumber = '+60122188693';
+    const message = encodeURIComponent(`Sending you the QR Code`);
+    
+    // Convert canvas to base64 image data (JPEG format for better compression)
+    const base64Image = qrImage.toDataURL("image/jpeg", 0.8); // Adjust image quality as needed
+
+    // Create a blob from the base64 data
+    const blob = base64ToBlob(base64Image);
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Open WhatsApp with the QR code image attached
+    window.open(`https://wa.me/${phoneNumber}?text=${message}&media=${blobUrl}`);
+}
+
+function base64ToBlob(base64Data) {
+    const byteCharacters = atob(base64Data.split(',')[1]);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
         }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: 'image/jpeg' });
+    return blob;
+}
+
 
     </script>
 </body>
