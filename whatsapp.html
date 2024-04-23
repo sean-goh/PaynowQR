@@ -186,7 +186,7 @@
             whatsappButton.textContent = 'Send via WhatsApp';
             whatsappButton.classList.add('whatsapp-button');
             whatsappButton.onclick = function() {
-                sendViaWhatsApp('', trackingID, phoneNumber, amount); // Send WhatsApp message for each QR code;
+                sendViaWhatsApp(trackingID, phoneNumber, amount); // Send WhatsApp message for each QR code;
             };
             qrContainer.appendChild(whatsappButton);
         }
@@ -248,7 +248,7 @@
             }
         }
 
-        function sendViaWhatsApp(qrData, trackingID, phoneNumber, amount) {
+        function sendViaWhatsApp(trackingID, phoneNumber, amount) {
             const message = encodeURIComponent(`Dear Sir/Madam,
         
                 Ninja Van would like to inform you that your shipment with Tracking number *${trackingID}* has arrived in Singapore.
