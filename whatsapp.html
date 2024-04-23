@@ -248,8 +248,16 @@
         }
 
         function sendViaWhatsApp(amount, phoneNumber, trackingID) {
-            const message = encodeURIComponent(`Amount (SGD): $${amount}\nTracking ID: ${trackingID}`);
-        
+            const message = encodeURIComponent(`Dear Sir/Madam,/n/nNinja Van would like to inform you that your shipment with Tracking number ${trackingID} has arrived in Singapore.
+                                                \n\nGoods and Service Tax (GST) will apply to your shipment as it has exceeded the value of SGD 400. The total GST and permit fee amount due is SGD $${amount}
+                                                \n\nTo avoid any delivery delays, please proceed to make payment via the QR code provided below:\n\nKindly provide proof of payment once the transaction is completed.
+                                                \n\n
+                                                -
+                                                \n\n
+                                                If you have any queries regarding the GST incurred on your purchase, you may refer to the following link: https://www.iras.gov.sg/taxes/goods-services-tax-(gst)/consumers/gst-on-imported-low-value-goods#:~:text=From%201%20Jan%202023%2C%20if,purchased%20from%20GST%2Dregistered%20suppliers
+                                                \n\nVisit our tracking page - https://www.ninjavan.co/en-sg/tracking to get the latest updates on your parcel status.
+                                                \n\nAlternatively, you may reach out to us via NinjaChat or email us at support_sg@ninjavan.co for any further assistance on your shipment.`);
+                                            
             // Open WhatsApp with the QR code image attached
             window.open(`https://wa.me/${phoneNumber}?text=${message}`);
         }
