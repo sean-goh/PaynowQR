@@ -1,3 +1,4 @@
+User
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -138,9 +139,9 @@
                 refNumber: refNumber,
                 company: company
             });
-        
+
             const QRstring = qrCode.output();
-        
+
             const styledQRCode = new QRCodeStyling({
                 width: 300,
                 height: 300,
@@ -151,41 +152,23 @@
                     margin: 0,
                 },
             });
-        
+
             const qrcodeContainer = document.getElementById('qrcode-container');
-        
+
             const qrCodeDiv = document.createElement('div');
             qrCodeDiv.classList.add('qr-code');
             qrcodeContainer.appendChild(qrCodeDiv);
-        
+
             styledQRCode.append(qrCodeDiv);
-        
+
             const refNumberText = document.createElement('p');
             refNumberText.textContent = `Reference Number: ${refNumber}`;
             qrCodeDiv.appendChild(refNumberText);
-        
+
             const amountText = document.createElement('p');
             amountText.textContent = `Amount (SGD): $${amount}`;
             qrCodeDiv.appendChild(amountText);
-        
-            // Create a button to send QR code via WhatsApp
-            const whatsappButton = document.createElement('button');
-            whatsappButton.textContent = 'Send via WhatsApp';
-            whatsappButton.onclick = function() {
-                sendViaWhatsApp(QRstring);
-            };
-            qrCodeDiv.appendChild(whatsappButton);
         }
-
-function sendViaWhatsApp(qrData) {
-    // Replace the following number with your desired WhatsApp number
-    const phoneNumber = '+60122188693';
-    const message = encodeURIComponent(`Sending you the QR Code: ${qrData}`);
-
-    // Open WhatsApp with the QR code image attached
-    window.open(`https://wa.me/${phoneNumber}?text=${message}`);
-}
-
 
         function downloadAllQRCode() {
             const qrcodeContainer = document.getElementById('qrcode-container');
