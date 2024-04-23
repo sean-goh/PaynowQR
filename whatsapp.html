@@ -189,7 +189,10 @@
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
         
-                html2canvas(qrCodeDiv).then((canvas) => {
+                html2canvas(qrCodeDiv).then((renderedCanvas) => {
+                    canvas.width = renderedCanvas.width;
+                    canvas.height = renderedCanvas.height;
+                    context.drawImage(renderedCanvas, 0, 0);
                     sendViaWhatsApp(QRstring, canvas); // Pass QR code data and canvas to sendViaWhatsApp
                 });
             };
