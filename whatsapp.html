@@ -128,7 +128,6 @@
                     const editable = "No";
         
                     generateQRCode(uen, amount, editable === 'true', refNumber, '');
-                    sendViaWhatsApp('', trackingID, phoneNumber, amount); // Send WhatsApp message for each QR code
                 }
         
                 // Show the download QR codes button after CSV upload is completed
@@ -187,7 +186,7 @@
             whatsappButton.textContent = 'Send via WhatsApp';
             whatsappButton.classList.add('whatsapp-button');
             whatsappButton.onclick = function() {
-                sendViaWhatsApp(QRstring);
+                sendViaWhatsApp('', trackingID, phoneNumber, amount); // Send WhatsApp message for each QR code;
             };
             qrContainer.appendChild(whatsappButton);
         }
