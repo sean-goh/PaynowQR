@@ -93,8 +93,6 @@
         <button id="downloadButton" type="button" onclick="downloadAllQRCode()">Download All QR Codes</button>
     </div>
 
-    <button id="whatsappButton" type="button">Send via WhatsApp</button>
-
     <script>
         function handleCSVUpload() {
             // Clear existing QR Codes
@@ -169,6 +167,14 @@
             const amountText = document.createElement('p');
             amountText.textContent = `Amount (SGD): $${amount}`;
             qrCodeDiv.appendChild(amountText);
+
+            // Create WhatsApp button for this QR code
+            const whatsappButton = document.createElement('button');
+            whatsappButton.textContent = 'Send via WhatsApp';
+            whatsappButton.onclick = function() {
+                sendViaWhatsApp(QRstring);
+            };
+            qrCodeDiv.appendChild(whatsappButton);
         }
 
         function downloadAllQRCode() {
@@ -227,15 +233,6 @@
             }
         }
 
-        function createWhatsAppButton(QRstring) {
-            const whatsappButton = document.createElement('button');
-            whatsappButton.textContent = 'Send via WhatsApp';
-            whatsappButton.onclick = function() {
-                sendViaWhatsApp(QRstring);
-            };
-            document.body.appendChild(whatsappButton); // Append button to the document body or another suitable container
-        }
-
         function sendViaWhatsApp(qrData) {
             // Replace the following number with your desired WhatsApp number
             const phoneNumber = '+60122188693';
@@ -244,9 +241,6 @@
             // Open WhatsApp with the QR code image attached
             window.open(`https://wa.me/${phoneNumber}?text=${message}`);
         }
-
-        // Call the createWhatsAppButton function after QR code generation
-        createWhatsAppButton(QRstring);
     </script>
 </body>
 </html>
