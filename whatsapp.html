@@ -58,6 +58,10 @@
             color: #555;
         }
 
+        .qr-code-container {
+            margin-top: 20px;
+        }
+
         .qr-code {
             margin: 20px;
             padding: 20px;
@@ -70,6 +74,10 @@
         .qr-code p {
             font-size: 16px;
             color: #333;
+            margin-top: 10px;
+        }
+
+        .whatsapp-button {
             margin-top: 10px;
         }
 
@@ -154,9 +162,13 @@
 
             const qrcodeContainer = document.getElementById('qrcode-container');
 
+            const qrContainer = document.createElement('div');
+            qrContainer.classList.add('qr-code-container');
+            qrcodeContainer.appendChild(qrContainer);
+
             const qrCodeDiv = document.createElement('div');
             qrCodeDiv.classList.add('qr-code');
-            qrcodeContainer.appendChild(qrCodeDiv);
+            qrContainer.appendChild(qrCodeDiv);
 
             styledQRCode.append(qrCodeDiv);
 
@@ -171,15 +183,15 @@
             // Create WhatsApp button for this QR code
             const whatsappButton = document.createElement('button');
             whatsappButton.textContent = 'Send via WhatsApp';
+            whatsappButton.classList.add('whatsapp-button');
             whatsappButton.onclick = function() {
                 sendViaWhatsApp(QRstring);
             };
-            qrCodeDiv.appendChild(whatsappButton);
+            qrContainer.appendChild(whatsappButton);
         }
 
         function downloadAllQRCode() {
-            const qrcodeContainer = document.getElementById('qrcode-container');
-            const qrCodes = qrcodeContainer.querySelectorAll('.qr-code');
+            const qrcodeContainers = document.querySelectorAll('.qr-code-container');
         
             const today = new Date();
             const yy = today.getFullYear().toString().slice(-2);
@@ -187,7 +199,8 @@
             const dd = String(today.getDate()).padStart(2, '0');
             const dateString = `${yy}${mm}${dd}`;
         
-            qrCodes.forEach((qrCode, index) => {
+            qrcodeContainers.forEach((qrContainer, index) => {
+                const qrCode = qrContainer.querySelector('.qr-code');
                 const refNumberElement = qrCode.querySelector('p:nth-of-type(1)');
                 const amountElement = qrCode.querySelector('p:nth-of-type(2)');
         
