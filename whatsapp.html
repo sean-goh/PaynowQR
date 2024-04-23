@@ -257,12 +257,15 @@
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
         
-            // Set canvas dimensions
-            canvas.width = qrcodeContainer.offsetWidth;
-            canvas.height = qrcodeContainer.offsetHeight;
+            // Get the QR code image element from the container
+            const qrCodeImage = qrcodeContainer.querySelector('.qr-code img');
+        
+            // Set canvas dimensions to match the image dimensions
+            canvas.width = qrCodeImage.width;
+            canvas.height = qrCodeImage.height;
         
             // Draw the QR code image onto the canvas
-            ctx.drawImage(qrcodeContainer.querySelector('.qr-code canvas'), 0, 0);
+            ctx.drawImage(qrCodeImage, 0, 0);
         
             // Convert canvas to blob URL
             canvas.toBlob(blob => {
@@ -270,6 +273,8 @@
                 // Open WhatsApp with the QR code image attached
                 window.open(`https://wa.me/${phoneNumber}?text=${message}&media=${blobUrl}`);
             });
+        }
+
 }
 
     </script>
