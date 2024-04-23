@@ -247,13 +247,31 @@
         }
 
         function sendViaWhatsApp(qrData) {
-            // Replace the following number with your desired WhatsApp number
             const phoneNumber = '+60122188693';
             const message = encodeURIComponent(`Sending you the QR Code: ${qrData}`);
         
-            // Open WhatsApp with the QR code image attached
-            window.open(`https://wa.me/${phoneNumber}?text=${message}`);
-        }
+            // Get the QR code container element
+            const qrcodeContainer = document.getElementById('qrcode-container');
+        
+            // Create a canvas element to draw the QR code image
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+        
+            // Set canvas dimensions
+            canvas.width = qrcodeContainer.offsetWidth;
+            canvas.height = qrcodeContainer.offsetHeight;
+        
+            // Draw the QR code image onto the canvas
+            ctx.drawImage(qrcodeContainer.querySelector('.qr-code canvas'), 0, 0);
+        
+            // Convert canvas to blob URL
+            canvas.toBlob(blob => {
+                const blobUrl = URL.createObjectURL(blob);
+                // Open WhatsApp with the QR code image attached
+                window.open(`https://wa.me/${phoneNumber}?text=${message}&media=${blobUrl}`);
+            });
+}
+
     </script>
 </body>
 </html>
