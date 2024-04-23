@@ -106,37 +106,39 @@
             // Clear existing QR Codes
             const qrcodeContainer = document.getElementById('qrcode-container');
             qrcodeContainer.innerHTML = '';
-
+        
             const fileInput = document.getElementById('csvFile');
             const file = fileInput.files[0];
             const reader = new FileReader();
-
+        
             reader.onload = function(event) {
                 const csvData = event.target.result;
                 const lines = csvData.split(/\r\n|\n/);
-
+        
                 // Skip the first line (header row)
                 for (let i = 1; i < lines.length; i++) {
                     const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
                     if (!line || !line.trim()) continue; // Skip if line is empty or consists of only whitespace
-
-                    const [amountStr, refNumber] = line.split(',');
+        
+                    const [amountStr, refNumber, trackingID, phoneNumber] = line.split(',');
                     const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
-
+        
                     // Set static values
                     const uen = "201412014ECB1";
                     const editable = "No";
-
+        
                     generateQRCode(uen, amount, editable === 'true', refNumber, '');
+                    sendViaWhatsApp('', trackingID, phoneNumber, amount); // Send WhatsApp message for each QR code
                 }
-
+        
                 // Show the download QR codes button after CSV upload is completed
                 document.getElementById('downloadButton').style.display = 'block';
                 document.getElementById('downloadButton').style.margin = 'auto';
             };
-
+        
             reader.readAsText(file);
         }
+
 
         function generateQRCode(uen, amount, editable, refNumber, company) {
             const qrCode = new PaynowQR({
@@ -226,7 +228,7 @@
         }
 
         function downloadCSVTemplate() {
-            const csvTemplate = 'Amount,RefNumber\n';
+            const csvTemplate = 'Amount,RefNumber,TID,Phone Number\n'; // Include TID and Phone Number columns in the template
             const blob = new Blob([csvTemplate], { type: 'text/csv' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -235,6 +237,7 @@
             link.click();
             document.body.removeChild(link);
         }
+
 
         function updateFileName(input) {
             const fileNameElement = document.getElementById('fileName');
@@ -246,14 +249,33 @@
             }
         }
 
-        function sendViaWhatsApp(qrData) {
-            // Replace the following number with your desired WhatsApp number
-            const phoneNumber = '+60122188693';
-            const message = encodeURIComponent(`Sending you the QR Code: ${qrData}`);
+        function sendViaWhatsApp(qrData, trackingID, phoneNumber, amount) {
+            const message = encodeURIComponent(`Dear Sir/Madam,
         
-            // Open WhatsApp with the QR code image attached
-            window.open(`https://wa.me/${phoneNumber}?text=${message}`);
+                Ninja Van would like to inform you that your shipment with Tracking number *${trackingID}* has arrived in Singapore.
+                
+                Goods and Service Tax (GST) will apply to your shipment as it has exceeded the value of SGD 400. The total GST and permit fee amount due is *SGD ${amount}*.
+                
+                To avoid any delivery delays, please proceed to make payment via the QR code provided below:
+                
+                Kindly provide proof of payment once the transaction is completed.
+                
+                -
+                
+                If you have any queries regarding the GST incurred on your purchase, you may refer to the following link: [https://www.iras.gov.sg/taxes/goods-services-tax-(gst)/consumers/gst-on-imported-low-value-goods#:~:text=From 1 Jan 2023%2C if,purchased from GST-registered suppliers](https://www.iras.gov.sg/taxes/goods-services-tax-(gst)/consumers/gst-on-imported-low-value-goods#:~:text=From%201%20Jan%202023%2C%20if,purchased%20from%20GST%2Dregistered%20suppliers)
+                
+                Visit our [tracking page](https://www.ninjavan.co/en-sg/tracking) - https://www.ninjavan.co/en-sg/tracking to get the latest updates on your parcel status.
+                
+                Alternatively, you may reach out to us via NinjaChat or email us at support_sg@ninjavan.co for any further assistance on your shipment.`);
+            
+            // Replace the following number with your desired WhatsApp number
+            const phoneNumberLink = phoneNumber.replace(/\s/g, ''); // Remove spaces from phone number
+            const whatsappLink = `https://wa.me/${phoneNumberLink}?text=${message}`;
+            
+            // Open WhatsApp with the message
+            window.open(whatsappLink);
         }
+
     </script>
 </body>
 </html>
