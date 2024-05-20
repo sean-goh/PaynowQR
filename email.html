@@ -77,7 +77,7 @@
             margin-top: 10px;
         }
 
-        .whatsapp-button {
+        .email-button {
             margin-top: 10px;
         }
 
@@ -120,14 +120,14 @@
                     const line = lines[i].trim(); // Trim to remove leading/trailing whitespace
                     if (!line || !line.trim()) continue; // Skip if line is empty or consists of only whitespace
         
-                    const [amountStr, refNumber, phoneNumber, trackingID] = line.split(',');
+                    const [amountStr, refNumber, emailAddress, trackingID] = line.split(',');
                     const amount = parseFloat(amountStr.replace(/[^0-9.]/g, '')); // Remove non-numeric characters
         
                     // Set static values
                     const uen = "201412014ECB1";
                     const editable = "No";
         
-                    generateQRCode(uen, amount, editable === 'false', refNumber, phoneNumber, trackingID);
+                    generateQRCode(uen, amount, editable === 'false', refNumber, emailAddress, trackingID);
                 }
         
                 // Show the download QR codes button after CSV upload is completed
@@ -139,7 +139,7 @@
         }
 
 
-        function generateQRCode(uen, amount, editable, refNumber, phoneNumber, trackingID) {
+        function generateQRCode(uen, amount, editable, refNumber, emailAddress, trackingID) {
             const qrCode = new PaynowQR({
                 uen: uen,
                 amount: amount,
@@ -180,14 +180,14 @@
             amountText.textContent = `Amount (SGD): $${amount}`;
             qrCodeDiv.appendChild(amountText);
 
-            // Create WhatsApp button for this QR code
-            const whatsappButton = document.createElement('button');
-            whatsappButton.textContent = 'Send via WhatsApp';
-            whatsappButton.classList.add('whatsapp-button');
-            whatsappButton.onclick = function() {
-                sendViaWhatsApp(amount, phoneNumber, trackingID);
+            // Create email button for this QR code
+            const emailButton = document.createElement('button');
+            emailButton.textContent = 'Send via Email';
+            emailButton.classList.add('email-button');
+            emailButton.onclick = function() {
+                sendViaEmail(amount, emailAddress, trackingID);
             };
-            qrContainer.appendChild(whatsappButton);
+            qrContainer.appendChild(emailButton);
         }
 
         function downloadAllQRCode() {
@@ -226,7 +226,7 @@
         }
 
         function downloadCSVTemplate() {
-            const csvTemplate = 'Amount,RefNumber,PhoneNumber,TrackingID\n'; // Include new columns
+            const csvTemplate = 'Amount,RefNumber,EmailAddress,TrackingID\n'; // Include new columns
             const blob = new Blob([csvTemplate], { type: 'text/csv' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -235,7 +235,6 @@
             link.click();
             document.body.removeChild(link);
         }
-
 
         function updateFileName(input) {
             const fileNameElement = document.getElementById('fileName');
@@ -247,13 +246,12 @@
             }
         }
 
-        function sendViaWhatsApp(amount, phoneNumber, trackingID) {
-            const message = encodeURIComponent(`Dear Sir/Madam,\n\nNinja Van would like to inform you that your shipment with Tracking number ${trackingID} has arrived in Singapore.\n\nGoods and Service Tax (GST) will apply to your shipment as it has exceeded the value of SGD 400. The total GST and permit fee amount due is SGD $${amount}\n\nTo avoid any delivery delays, please proceed to make payment via the QR code provided below:\n\nKindly provide proof of payment once the transaction is completed.\n\n-\n\nIf you have any queries regarding the GST incurred on your purchase, you may refer to the following link: https://www.iras.gov.sg/taxes/goods-services-tax-(gst)/consumers/gst-on-imported-low-value-goods#:~:text=From%201%20Jan%202023%2C%20if,purchased%20from%20GST%2Dregistered%20suppliers\n\nVisit our tracking page - https://www.ninjavan.co/en-sg/tracking to get the latest updates on your parcel status.\n\nAlternatively, you may reach out to us via NinjaChat or email us at support_sg@ninjavan.co for any further assistance on your shipment.`);
-                                            
-            // Open WhatsApp with the QR code image attached
-            window.open(`https://wa.me/${phoneNumber}?text=${message}`);
+        function sendViaEmail(amount, emailAddress, trackingID) {
+            const subject = encodeURIComponent("Ninja Van Shipment Arrival and GST Payment");
+            const body = encodeURIComponent(`Dear Sir/Madam,\n\nNinja Van would like to inform you that your shipment with Tracking number ${trackingID} has arrived in Singapore.\n\nGoods and Service Tax (GST) will apply to your shipment as it has exceeded the value of SGD 400. The total GST and permit fee amount due is SGD $${amount}\n\nTo avoid any delivery delays, please proceed to make payment via the QR code provided below:\n\nKindly provide proof of payment once the transaction is completed.\n\n-\n\nIf you have any queries regarding the GST incurred on your purchase, you may refer to the following link: https://www.iras.gov.sg/taxes/goods-services-tax-(gst)/consumers/gst-on-imported-low-value-goods#:~:text=From%201%20Jan%202023%2C%20if,purchased%20from%20GST%2Dregistered%20suppliers\n\nVisit our tracking page - https://www.ninjavan.co/en-sg/tracking to get the latest updates on your parcel status.\n\nAlternatively, you may reach out to us via NinjaChat or email us at support_sg@ninjavan.co for any further assistance on your shipment.`);
+            
+            window.open(`mailto:${emailAddress}?subject=${subject}&body=${body}`);
         }
-
     </script>
 </body>
 </html>
