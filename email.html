@@ -233,31 +233,35 @@
         }
 
         function sendViaEmail(amount, email, trackingID, qrCodeDiv) {
-            html2canvas(qrCodeDiv).then((canvas) => {
+            html2canvas(qrCodeDiv, { scale: 1 }).then((canvas) => {
                 canvas.toBlob((blob) => {
                     const reader = new FileReader();
                     reader.readAsDataURL(blob);
                     reader.onloadend = function() {
                         const base64data = reader.result;
-
+        
                         const templateParams = {
                             to_email: email,
                             amount: amount,
                             tracking_id: trackingID,
                             qr_code: base64data,
                         };
-
-                        emailjs.send('service_8hh8e8t', 'template_7sw3qhj', templateParams)
+        
+                        console.log('Sending email with params:', templateParams);
+        
+                        emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
                             .then(function(response) {
+                                console.log('EmailJS response:', response);
                                 alert('Email sent successfully!');
                             }, function(error) {
+                                console.error('EmailJS error:', error);
                                 alert('Failed to send email.');
-                                console.log('FAILED...', error);
                             });
                     };
-                });
+                }, 'image/jpeg', 0.5); // Change to JPEG and set quality to 0.5
             });
         }
+
     </script>
 </head>
 <body>
