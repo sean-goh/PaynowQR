@@ -133,39 +133,48 @@
                 editable: editable,
                 refNumber: refNumber
             });
-        
-            const qrCodeDataUri = qrCode.output();
-        
+
+            const QRstring = qrCode.output();
+
+            const styledQRCode = new QRCodeStyling({
+                width: 300,
+                height: 300,
+                data: QRstring,
+                image: 'https://i.imgur.com/ipaIiBl.png',
+                imageOptions: {
+                    crossOrigin: 'anonymous',
+                    margin: 0,
+                },
+            });
+
             const qrcodeContainer = document.getElementById('qrcode-container');
-        
+
             const qrContainer = document.createElement('div');
             qrContainer.classList.add('qr-code-container');
             qrcodeContainer.appendChild(qrContainer);
-        
-            const qrCodeImage = document.createElement('img');
-            qrCodeImage.src = qrCodeDataUri;
-            qrCodeImage.alt = 'QR Code';
-            qrContainer.appendChild(qrCodeImage);
-        
+
+            const qrCodeDiv = document.createElement('div');
+            qrCodeDiv.classList.add('qr-code');
+            qrContainer.appendChild(qrCodeDiv);
+
+            styledQRCode.append(qrCodeDiv);
+
             const refNumberText = document.createElement('p');
             refNumberText.textContent = `Reference Number: ${refNumber}`;
-            qrContainer.appendChild(refNumberText);
-        
+            qrCodeDiv.appendChild(refNumberText);
+
             const amountText = document.createElement('p');
             amountText.textContent = `Amount (SGD): $${amount}`;
-            qrContainer.appendChild(amountText);
-        
+            qrCodeDiv.appendChild(amountText);
+
             const emailButton = document.createElement('button');
             emailButton.textContent = 'Send via Email';
             emailButton.classList.add('email-button');
             emailButton.onclick = function() {
-                sendViaEmail(amount, email, trackingID, qrContainer);
+                sendViaEmail(amount, email, trackingID, qrCodeDiv);
             };
             qrContainer.appendChild(emailButton);
         }
-
-
-
 
         function downloadAllQRCode() {
             const qrcodeContainers = document.querySelectorAll('.qr-code-container');
