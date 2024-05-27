@@ -134,7 +134,7 @@
                 refNumber: refNumber
             });
         
-            const qrCodeImageUrl = qrCode.outputImage(); // Get the URL of the QR code image
+            const qrCodeDataUri = qrCode.output();
         
             const qrcodeContainer = document.getElementById('qrcode-container');
         
@@ -142,11 +142,11 @@
             qrContainer.classList.add('qr-code-container');
             qrcodeContainer.appendChild(qrContainer);
         
-            const qrCodeImage = document.createElement('img'); // Create img element
-            qrCodeImage.src = qrCodeImageUrl; // Set src attribute to the QR code image URL
-            qrCodeImage.alt = 'QR Code'; // Add alt text for accessibility
-            qrCodeImage.classList.add('qr-code-image'); // Add a class for styling if needed
-            qrContainer.appendChild(qrCodeImage); // Append img element to QR code container
+            const qrCodeImage = document.createElement('img');
+            qrCodeImage.src = qrCodeDataUri;
+            qrCodeImage.alt = 'QR Code';
+            qrCodeImage.classList.add('qr-code-image');
+            qrContainer.appendChild(qrCodeImage);
         
             const refNumberText = document.createElement('p');
             refNumberText.textContent = `Reference Number: ${refNumber}`;
@@ -164,6 +164,7 @@
             };
             qrContainer.appendChild(emailButton);
         }
+
 
 
 
