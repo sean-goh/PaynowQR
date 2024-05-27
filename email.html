@@ -133,9 +133,9 @@
                 editable: editable,
                 refNumber: refNumber
             });
-
+        
             const QRstring = qrCode.output();
-
+        
             const styledQRCode = new QRCodeStyling({
                 width: 300,
                 height: 300,
@@ -146,27 +146,31 @@
                     margin: 0,
                 },
             });
-
+        
             const qrcodeContainer = document.getElementById('qrcode-container');
-
+        
             const qrContainer = document.createElement('div');
             qrContainer.classList.add('qr-code-container');
             qrcodeContainer.appendChild(qrContainer);
-
+        
             const qrCodeDiv = document.createElement('div');
             qrCodeDiv.classList.add('qr-code');
             qrContainer.appendChild(qrCodeDiv);
-
+        
             styledQRCode.append(qrCodeDiv);
-
+        
+            const qrImage = document.createElement('img'); // Create img element
+            qrImage.src = styledQRCode._options.dataURI; // Set src attribute to base64-encoded image data
+            qrCodeDiv.appendChild(qrImage); // Append img element to QR code container
+        
             const refNumberText = document.createElement('p');
             refNumberText.textContent = `Reference Number: ${refNumber}`;
             qrCodeDiv.appendChild(refNumberText);
-
+        
             const amountText = document.createElement('p');
             amountText.textContent = `Amount (SGD): $${amount}`;
             qrCodeDiv.appendChild(amountText);
-
+        
             const emailButton = document.createElement('button');
             emailButton.textContent = 'Send via Email';
             emailButton.classList.add('email-button');
@@ -175,6 +179,7 @@
             };
             qrContainer.appendChild(emailButton);
         }
+
 
         function downloadAllQRCode() {
             const qrcodeContainers = document.querySelectorAll('.qr-code-container');
