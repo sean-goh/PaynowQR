@@ -251,54 +251,82 @@
         }
 
         function sendViaEmail(amount, email, trackingID, qrCodeDiv) {
-            html2canvas(qrCodeDiv, { scale: 1 }).then((canvas) => {
-                canvas.toBlob((blob) => {
-                    const formData = new FormData();
-                    formData.append('image', blob);
+            return new Promise((resolve, reject) => {
+                html2canvas(qrCodeDiv, { scale: 1 }).then((canvas) => {
+                    canvas.toBlob((blob) => {
+                        const formData = new FormData();
+                        formData.append('image', blob);
         
-                    fetch('https://api.imgur.com/3/image', {
-                        method: 'POST',
-                        headers: {
-                            Authorization: 'Client-ID 3fccf892e66ed51' // Replace with your Imgur client ID
-                        },
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        const imgurUrl = data.data.link;
+                        fetch('https://api.imgur.com/3/image', {
+                            method: 'POST',
+                            headers: {
+                                Authorization: 'Client-ID 3fccf892e66ed51' // Replace with your Imgur client ID
+                            },
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            const imgurUrl = data.data.link;
         
-                        const templateParams = {
-                            to_email: email,
-                            amount: amount,
-                            tracking_id: trackingID,
-                            qr_code_url: imgurUrl, // Using the Imgur URL
-                        };
+                            const templateParams = {
+                                to_email: email,
+                                amount: amount,
+                                tracking_id: trackingID,
+                                qr_code_url: imgurUrl, // Using the Imgur URL
+                            };
         
-                        console.log('Sending email with params:', templateParams);
-        
-                        emailjs.send('service_8hh8e8t', 'template_7sw3qhj', templateParams)
-                            .then(function(response) {
-                                console.log('EmailJS response:', response);
-                                alert('Email sent successfully!');
-                            }, function(error) {
-                                console.error('EmailJS error:', error);
-                                alert('Failed to send email.');
-                            });
-                    })
-                    .catch(error => {
-                        console.error('Imgur upload error:', error);
-                        alert('Failed to upload image to Imgur.');
-                    });
-                }, 'image/png'); // Set the image type to PNG to avoid compression
+                            emailjs.send('service_8hh8e8t', 'template_7sw3qhj', templateParams)
+                                .then(function(response) {
+                                    resolve(); // Resolve promise when email is sent successfully
+                                })
+                                .catch(function(error) {
+                                    reject(trackingID); // Reject promise with tracking ID if there's an error
+                                });
+                        })
+                        .catch(error => {
+                            reject(trackingID); // Reject promise with tracking ID if there's an error
+                        });
+                    }, 'image/png'); // Set the image type to PNG to avoid compression
+                });
             });
         }
 
+
         function sendAllEmails() {
-            emailDataArray.forEach(emailData => {
+            let allEmailsSent = true; // Flag to track if all emails are sent successfully
+            let failedEmails = []; // Array to store tracking IDs of failed emails
+            
+            // Create an array of promises for sending emails
+            const emailPromises = emailDataArray.map(emailData => {
                 const { amount, email, trackingID, qrCodeDiv } = emailData;
-                sendViaEmail(amount, email, trackingID, qrCodeDiv);
+                return sendViaEmail(amount, email, trackingID, qrCodeDiv)
+                    .catch(error => {
+                        failedEmails.push(trackingID); // Add tracking ID to the failed emails array
+                        allEmailsSent = false; // Update flag to indicate failure
+                    });
             });
+            
+            // Wait for all email promises to settle
+            Promise.all(emailPromises)
+                .then(() => {
+                    // Display appropriate alert based on email sending result
+                    if (allEmailsSent) {
+                        alert('All emails sent successfully!');
+                    } else {
+                        alert(`Failed to send emails for the following tracking IDs: ${failedEmails.join(', ')}`);
+                    }
+                });
         }
+
+    
+    // Display appropriate alert based on email sending result
+    if (allEmailsSent) {
+        alert('All emails sent successfully!');
+    } else {
+        alert(`Failed to send emails for the following tracking IDs: ${failedEmails.join(', ')}`);
+    }
+}
+
         
     </script>
 </head>
