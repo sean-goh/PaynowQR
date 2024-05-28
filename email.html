@@ -81,7 +81,7 @@
             margin-top: 10px;
         }
 
-        #downloadButton {
+        #downloadButton, #sendAllEmailButton {
             display: none;
         }
     </style>
@@ -121,11 +121,13 @@
         
                 document.getElementById('downloadButton').style.display = 'block';
                 document.getElementById('downloadButton').style.margin = 'auto';
+                document.getElementById('sendAllEmailButton').style.display = 'block';
+                document.getElementById('sendAllEmailButton').style.margin = 'auto';
             };
         
             reader.readAsText(file);
         }
-
+        
         function generateQRCode(uen, amount, editable, refNumber, email, trackingID) {
             const qrCode = new PaynowQR({
                 uen: uen,
@@ -170,6 +172,8 @@
             const emailButton = document.createElement('button');
             emailButton.textContent = 'Send via Email';
             emailButton.classList.add('email-button');
+            emailButton.dataset.email = email;
+            emailButton.dataset.trackingid = trackingID;
             emailButton.onclick = function() {
                 sendViaEmail(amount, email, trackingID, qrCodeDiv);
             };
@@ -191,8 +195,7 @@
                 const amountElement = qrCode.querySelector('p:nth-of-type(2)');
         
                 const refNumber = refNumberElement.textContent.split(': ')[1];
-                const amount = amountElement.textContent.split(': ')[1].replace('$', '');
-        
+                const amount = amountElement.textContent.split(': ')[1].replace('$
                 const canvas = document.createElement('canvas');
                 canvas.width = qrCode.clientWidth;
                 canvas.height = qrCode.clientHeight;
@@ -230,6 +233,16 @@
             } else {
                 fileNameElement.textContent = 'No file chosen';
             }
+        }
+
+        function sendAllEmails() {
+            const emailButtons = document.querySelectorAll('.email-button');
+            emailButtons.forEach(button => {
+                const amount = parseFloat(button.parentNode.querySelector('p:nth-of-type(2)').textContent.split(': ')[1].replace('$', ''));
+                const email = button.dataset.email;
+                const trackingID = button.dataset.trackingid;
+                sendViaEmail(amount, email, trackingID, button.parentNode);
+            });
         }
 
         function sendViaEmail(amount, email, trackingID, qrCodeDiv) {
@@ -287,6 +300,7 @@
         <div id="qrcode-container"></div>
 
         <button id="downloadButton" type="button" onclick="downloadAllQRCode()">Download All QR Codes</button>
+        <button id="sendAllEmailButton" type="button" onclick="sendAllEmails()">Send Emails for All QR Codes</button>
     </div>
 </body>
 </html>
