@@ -84,9 +84,6 @@
         #downloadButton {
             display: none;
         }
-        #downloadButton2 {
-            display: none;
-        }        
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
     <script src="./dist/paynowqr.umd.js"></script>
@@ -124,9 +121,6 @@
         
                 document.getElementById('downloadButton').style.display = 'block';
                 document.getElementById('downloadButton').style.margin = 'auto';
-
-                document.getElementById('downloadButton2').style.display = 'block';
-                document.getElementById('downloadButton2').style.margin = 'auto';
             };
         
             reader.readAsText(file);
@@ -291,9 +285,8 @@
         <span id="fileName" class="file-name">No file chosen</span>
 
         <div id="qrcode-container"></div>
-        
+
         <button id="downloadButton" type="button" onclick="downloadAllQRCode()">Download All QR Codes</button>
-        <button id="downloadButton2" type="button" onclick="downloadAllQRCode()">Download All QR Codes 2</button>
     </div>
 </body>
 </html>
