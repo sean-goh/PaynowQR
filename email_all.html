@@ -81,10 +81,12 @@
             margin-top: 10px;
         }
 
-        #downloadButton,
-        #downloadButton2 {
-            display: none; /* Initially hide both download buttons */
+        #downloadButton {
+            display: none;
         }
+        #downloadButton2 {
+            display: none;
+        }        
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling"></script>
     <script src="./dist/paynowqr.umd.js"></script>
@@ -120,9 +122,10 @@
                     generateQRCode(uen, amount, editable === 'false', refNumber, email, trackingID);
                 }
         
-                document.getElementById('downloadButton').style.display = 'inline-block'; // Show first download button
+                document.getElementById('downloadButton').style.display = 'block';
                 document.getElementById('downloadButton').style.margin = 'auto';
-                document.getElementById('downloadButton2').style.display = 'inline-block'; // Show second download button
+
+                document.getElementById('downloadButton2').style.display = 'block';
                 document.getElementById('downloadButton2').style.margin = 'auto';
             };
         
@@ -196,7 +199,7 @@
                 const refNumber = refNumberElement.textContent.split(': ')[1];
                 const amount = amountElement.textContent.split(': ')[1].replace('$', '');
         
-                                const canvas = document.createElement('canvas');
+                const canvas = document.createElement('canvas');
                 canvas.width = qrCode.clientWidth;
                 canvas.height = qrCode.clientHeight;
                 const ctx = canvas.getContext('2d');
@@ -227,17 +230,11 @@
 
         function updateFileName(input) {
             const fileNameElement = document.getElementById('fileName');
-            const downloadButton2 = document.getElementById('downloadButton2'); // Get the second download button
-
             if (input.files.length > 0) {
                 fileNameElement.textContent = input.files[0].name;
                 handleCSVUpload();
-                // Show the second download button when a file is uploaded
-                downloadButton2.style.display = 'inline-block';
             } else {
                 fileNameElement.textContent = 'No file chosen';
-                // Hide the second download button when no file is chosen
-                downloadButton2.style.display = 'none';
             }
         }
 
@@ -285,6 +282,18 @@
         }
 
     </script>
+</head>
+<body>
+    <div class="container">
+        <button id="downloadCSVButton" type="button" onclick="downloadCSVTemplate()">Download CSV Template</button>
+        <input type="file" id="csvFile" accept=".csv" onchange="updateFileName(this)">
+        <label for="csvFile" class="custom-file-upload">Upload CSV</label>
+        <span id="fileName" class="file-name">No file chosen</span>
+
+        <div id="qrcode-container"></div>
+        
+        <button id="downloadButton" type="button" onclick="downloadAllQRCode()">Download All QR Codes</button>
+        <button id="downloadButton2" type="button" onclick="downloadAllQRCode()">Download All QR Codes 2</button>
+    </div>
 </body>
 </html>
-
