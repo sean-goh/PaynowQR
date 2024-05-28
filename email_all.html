@@ -178,6 +178,54 @@
             };
             qrContainer.appendChild(emailButton);
         }
+
+        function sendViaEmail(amount, email, trackingID, qrCodeDiv) {
+            html2canvas(qrCodeDiv).then(canvas => {
+                const dataURL = canvas.toDataURL('image/png');
+            
+                const formData = {
+                    email_to: email,
+                    amount: amount,
+                    trackingID: trackingID,
+                    imgData: dataURL
+                };
+            
+                emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData)
+                    .then(function(response) {
+                        console.log('SUCCESS!', response.status, response.text);
+                        alert('Email sent successfully!');
+                    }, function(error) {
+                        console.log('FAILED...', error);
+                        alert('Failed to send email.');
+                    });
+            });
+        }
+
+        function downloadAllQRCode() {
+            const qrcodeContainers = document.querySelectorAll('.qr-code-container');
+            
+            const today = new Date();
+            const yy = today.getFullYear().toString().slice(-2);
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const dateString = `${yy}${mm}${dd}`;
+            
+            qrcodeContainers.forEach((qrContainer, index) => {
+                const qrCode = qrContainer.querySelector('.qr-code');
+                const refNumberElement = qrCode.querySelector('p:nth-of-type(1)');
+                const amountElement = qrCode.querySelector('p:nth-of-type(2)');
+                
+                const refNumber = refNumberElement.textContent.split(': ')[1];
+                const amount = amountElement.textContent.split(': ')[1].replace('$', '');
+                
+                html2canvas(qrCode).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `QR_${dateString}_${index + 1}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
+            });
+        }
     </script>
 </head>
 <body>
@@ -191,82 +239,6 @@
         <button id="downloadButton" onclick="downloadAllQRCode()">Download All QR Codes</button>
         <button id="sendAllEmailButton" onclick="sendAllEmails()">Send All via Email</button>
     </div>
-<script>
-    function sendViaEmail(amount, email, trackingID, qrCodeDiv) {
-        const canvas = document.createElement('canvas');
-        canvas.width = qrCodeDiv.clientWidth;
-        canvas.height = qrCodeDiv.clientHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(qrCodeDiv, 0, 0);
-    
-        const dataURL = canvas.toDataURL('image/png');
-    
-        const formData = {
-            email_to: email,
-            amount: amount,
-            trackingID: trackingID,
-            imgData: dataURL
-        };
-    
-        emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData)
-            .then(function(response) {
-                console.log('SUCCESS!', response.status, response.text);
-                alert('Email sent successfully!');
-            }, function(error) {
-                console.log('FAILED...', error);
-                alert('Failed to send email.');
-            });
-    }
-
-    function downloadAllQRCode() {
-        const qrcodeContainers = document.querySelectorAll('.qr-code-container');
-        
-        const today = new Date();
-        const yy = today.getFullYear().toString().slice(-2);
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const dateString = `${yy}${mm}${dd}`;
-        
-        qrcodeContainers.forEach((qrContainer, index) => {
-            const qrCode = qrContainer.querySelector('.qr-code');
-            const refNumberElement = qrCode.querySelector('p:nth-of-type(1)');
-            const amountElement = qrCode.querySelector('p:nth-of-type(2)');
-            
-            const refNumber = refNumberElement.textContent.split(': ')[1];
-            const amount = amountElement.textContent.split(': ')[1].replace('$', '');
-            
-            html2canvas(qrCode).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `QR_${dateString}_${index + 1}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
-        });
-    }
-
-    
-    function sendViaEmail(amount, email, trackingID, qrCodeDiv) {
-        html2canvas(qrCodeDiv).then(canvas => {
-            const dataURL = canvas.toDataURL('image/png');
-        
-            const formData = {
-                email_to: email,
-                amount: amount,
-                trackingID: trackingID,
-                imgData: dataURL
-            };
-        
-            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', formData)
-                .then(function(response) {
-                    console.log('SUCCESS!', response.status, response.text);
-                    alert('Email sent successfully!');
-                }, function(error) {
-                    console.log('FAILED...', error);
-                    alert('Failed to send email.');
-                });
-        });
-}
-</script>
-
 </body>
 </html>
+
