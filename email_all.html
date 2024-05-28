@@ -278,18 +278,22 @@
                             emailjs.send('service_8hh8e8t', 'template_7sw3qhj', templateParams)
                                 .then(function(response) {
                                     resolve(); // Resolve promise when email is sent successfully
+                                    alert('Email sent successfully!'); // Alert for success
                                 })
                                 .catch(function(error) {
                                     reject(trackingID); // Reject promise with tracking ID if there's an error
+                                    alert('Failed to send email.'); // Alert for failure
                                 });
                         })
                         .catch(error => {
                             reject(trackingID); // Reject promise with tracking ID if there's an error
+                            alert('Failed to upload image to Imgur.'); // Alert for failure
                         });
                     }, 'image/png'); // Set the image type to PNG to avoid compression
                 });
             });
         }
+
 
 
         function sendAllEmails() {
