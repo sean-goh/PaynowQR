@@ -93,11 +93,15 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script>
+        
+        let emailDataArray = [];
+        
         (function(){
             emailjs.init("F1jaGUHyhF6x1PoiH");
         })();
 
         function handleCSVUpload() {
+            emailDataArray = [];
             const qrcodeContainer = document.getElementById('qrcode-container');
             qrcodeContainer.innerHTML = '';
         
@@ -180,6 +184,14 @@
                 sendViaEmail(amount, email, trackingID, qrCodeDiv);
             };
             qrContainer.appendChild(emailButton);
+
+             emailDataArray.push({
+                    amount: amount,
+                    email: email,
+                    trackingID: trackingID,
+                    qrCodeDiv: qrCodeDiv // Store QR code div reference for later use
+                });
+                    
         }
 
         function downloadAllQRCode() {
@@ -281,6 +293,13 @@
             });
         }
 
+        function sendAllEmails() {
+            emailDataArray.forEach(emailData => {
+                const { amount, email, trackingID, qrCodeDiv } = emailData;
+                sendViaEmail(amount, email, trackingID, qrCodeDiv);
+            });
+        }
+        
     </script>
 </head>
 <body>
@@ -293,7 +312,7 @@
         <div id="qrcode-container"></div>
         
         <button id="downloadButton" type="button" onclick="downloadAllQRCode()">Download All QR Codes</button>
-        <button id="downloadButton2" type="button" onclick="downloadAllQRCode()">Download All QR Codes 2</button>
+        <button id="downloadButton2" type="button" onclick="sendAllEmails()">sendAllEmails</button>
     </div>
 </body>
 </html>
