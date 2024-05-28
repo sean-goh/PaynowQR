@@ -322,7 +322,16 @@
                 });
         }
 
+    // Function to handle tab visibility change
+    function handleVisibilityChange() {
+        if (!document.hidden) { // Tab is visible
+            // Refresh QR codes or perform necessary updates
+            handleCSVUpload(); // Refresh QR codes when tab becomes visible again
+        }
+    }
     
+    // Attach event listener for visibility change
+    document.addEventListener("visibilitychange", handleVisibilityChange, false);
 
         
     </script>
