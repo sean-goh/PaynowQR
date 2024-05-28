@@ -179,30 +179,27 @@
             qrContainer.appendChild(emailButton);
         }
 
+        
         function sendViaEmail(amount, email, trackingID, qrCodeDiv) {
-            const canvas = document.createElement('canvas');
-            canvas.width = qrCodeDiv.clientWidth;
-            canvas.height = qrCodeDiv.clientHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(qrCodeDiv, 0, 0);
-        
-            const dataURL = canvas.toDataURL('image/png');
-        
-            const formData = {
-                email_to: email,
-                amount: amount,
-                trackingID: trackingID,
-                imgData: dataURL
-            };
-        
-            emailjs.send('service_8hh8e8t', 'template_7sw3qhj', formData)
-                .then(function(response) {
-                    console.log('SUCCESS!', response.status, response.text);
-                    alert('Email sent successfully!');
-                }, function(error) {
-                    console.log('FAILED...', error);
-                    alert('Failed to send email.');
-                });
+            html2canvas(qrCodeDiv).then(canvas => {
+                const dataURL = canvas.toDataURL('image/png');
+            
+                const formData = {
+                    email_to: email,
+                    amount: amount,
+                    trackingID: trackingID,
+                    imgData: dataURL
+                };
+            
+                emailjs.send('service_8hh8e8t', 'template_7sw3qhj', formData)
+                    .then(function(response) {
+                        console.log('SUCCESS!', response.status, response.text);
+                        alert('Email sent successfully!');
+                    }, function(error) {
+                        console.log('FAILED...', error);
+                        alert('Failed to send email.');
+                    });
+            });
         }
 
         function downloadAllQRCode() {
@@ -247,6 +244,7 @@
                 sendViaEmail(amount, email, trackingID, qrCode);
             });
         }
+
     </script>
 </head>
 <body>
