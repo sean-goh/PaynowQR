@@ -235,16 +235,25 @@
         function sendViaEmail(amount, email, trackingID, qrCodeDiv) {
             html2canvas(qrCodeDiv, { scale: 1 }).then((canvas) => {
                 canvas.toBlob((blob) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(blob);
-                    reader.onloadend = function() {
-                        const base64data = reader.result;
+                    const formData = new FormData();
+                    formData.append('image', blob);
+        
+                    fetch('https://api.imgur.com/3/image', {
+                        method: 'POST',
+                        headers: {
+                            Authorization: 'Client-ID 3fccf892e66ed51' // Replace with your Imgur client ID
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const imgurUrl = data.data.link;
         
                         const templateParams = {
                             to_email: email,
                             amount: amount,
                             tracking_id: trackingID,
-                            qr_code: base64data,
+                            qr_code_url: imgurUrl, // Using the Imgur URL
                         };
         
                         console.log('Sending email with params:', templateParams);
@@ -257,11 +266,14 @@
                                 console.error('EmailJS error:', error);
                                 alert('Failed to send email.');
                             });
-                    };
+                    })
+                    .catch(error => {
+                        console.error('Imgur upload error:', error);
+                        alert('Failed to upload image to Imgur.');
+                    });
                 }, 'image/jpeg', 0.5); // Change to JPEG and set quality to 0.5
             });
         }
-
     </script>
 </head>
 <body>
