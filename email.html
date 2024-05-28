@@ -271,9 +271,10 @@
                         console.error('Imgur upload error:', error);
                         alert('Failed to upload image to Imgur.');
                     });
-                }, 'image/jpeg', 0.5); // Change to JPEG and set quality to 0.5
+                }, 'image/png'); // Set the image type to PNG to avoid compression
             });
         }
+
     </script>
 </head>
 <body>
